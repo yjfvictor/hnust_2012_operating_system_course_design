@@ -56,7 +56,7 @@ void StartClone(int nCloneID)
 		CloseHandle(pi.hThread);
 	}
 	else
-		_ftprintf(stderr, TEXT("创建Clone ID为%d的进程失败"), nCloneID);
+		_ftprintf(stderr, TEXT("创建Clone ID为%d的进程失败\n"), nCloneID);
 }
 
 int _tmain(int argc, TCHAR * argv[])
