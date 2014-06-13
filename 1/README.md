@@ -74,7 +74,7 @@ Unicode（ISO/IEC 10646）的字符编码有三种“表示方式”，分别是
     typedef wchar_t     TCHAR;
     #else
     #define __T(x)      x
-    typedef char            TCHAR;
+    typedef char        TCHAR;
     #endif
     #define _T(x)       __T(x)
     #define _TEXT(x)    __T(x)
