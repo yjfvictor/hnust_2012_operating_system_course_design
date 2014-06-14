@@ -34,7 +34,7 @@ void server(void)
 	size_t msgsz;
 	long msgtyp;
 
-	// IPC_CREAT表示如果不存在这个key值的消息，则创建它
+	// IPC_CREAT表示如果不存在这个key值的消息队列，则创建它
 	// 八进制600，表示当前用户有读写权限
 	int msgflg = IPC_CREAT | 0600;
 
@@ -135,15 +135,22 @@ int main(void)
 		else
 		{
 			client_pid = fork_result;
+
+			// 等待进程标识符为client_pid的子进程结束，退出状态储存在client_status变量中
 			if ( waitpid(client_pid, &client_status, 0) == -1 )
 				perror("(parent) wait for client failed");
 			else
+			{
+				// WEXITSTATUS(client_status) 是进程退出码（即main函数的返回值）
 				printf("(parent) the exit code of client process is %d\n", WEXITSTATUS(client_status));
+			}
 			if ( waitpid(server_pid, &server_status, 0) == -1 )
 				perror("(parent) wait for server failed");
 			else
 				printf("(parent) the exit code of server process is %d\n", WEXITSTATUS(server_status));
 
+
+			// 在msgctl函数中传入IPC_RMID参数，表示删除掉指定消息队列
 			msgflg = IPC_CREAT | 0600;
 			msgid = msgget(key, msgflg);
 			cmd = IPC_RMID;
