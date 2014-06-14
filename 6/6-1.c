@@ -39,9 +39,9 @@ void server(void)
 	int msgflg = IPC_CREAT | 0600;
 
 	// 获得System V的消息队列标识符
-	int msgid = msgget(key, msgflg);
+	int msqid = msgget(key, msgflg);
 
-	if ( msgid == -1 )
+	if ( msqid == -1 )
 	{
 		perror("(server) msgget failed");
 		exit(EXIT_FAILURE);
@@ -54,7 +54,7 @@ void server(void)
 	do
 	{
 		// 接收消息
-		msg_size = msgrcv( msgid, &msg, msgsz, msgtyp, msgflg);
+		msg_size = msgrcv( msqid, &msg, msgsz, msgtyp, msgflg);
 		if ( msg_size == -1 )
 			perror("(server) msgrcv failed");
 		else
@@ -66,11 +66,11 @@ void client(void)
 {
 	int i; // 循环计数
 	int msgflg = IPC_CREAT | 0600;
-	int msgid = msgget(key, msgflg);
+	int msqid = msgget(key, msgflg);
 	msgbuf msg;
 	size_t msgsz;
 
-	if ( msgid == -1 )
+	if ( msqid == -1 )
 	{
 		perror("(client) msgget failed");
 		exit(EXIT_FAILURE);
@@ -85,7 +85,7 @@ void client(void)
 		msg.mtext[0] = (char)i;
 
 		// 发送消息
-		if (  msgsnd(msgid, &msg, msgsz, msgflg) == -1 )
+		if (  msgsnd(msqid, &msg, msgsz, msgflg) == -1 )
 			perror("(client) msgsnd failed");
 		else
 			puts("(client) sent");
@@ -100,7 +100,7 @@ int main(void)
 	struct msqid_ds buf;
 	int cmd;
 	int msgflg;
-	int msgid;
+	int msqid;
 
 	// 创建子进程——进程分叉
 	if ( (fork_result = fork()) == -1 )
@@ -152,9 +152,9 @@ int main(void)
 
 			// 在msgctl函数中传入IPC_RMID参数，表示删除掉指定消息队列
 			msgflg = IPC_CREAT | 0600;
-			msgid = msgget(key, msgflg);
+			msqid = msgget(key, msgflg);
 			cmd = IPC_RMID;
-			if ( msgctl(msgid, cmd, &buf) == -1 )
+			if ( msgctl(msqid, cmd, &buf) == -1 )
 			{
 				perror("(client) msgctl IPC_RMID failed");
 				exit(EXIT_FAILURE);
