@@ -35,7 +35,7 @@ Unicode（ISO/IEC 10646）的字符编码有三种“表示方式”，分别是
 
 【ISO国际标准】根据ISO的C标准和C++标准，字符类型有两种：一种叫做“窄字符”（narrow character），用char表示，每个单位占一个字节；另一种叫做“宽字符”（wide character），用wchar_t表示，每个单位占的字节数必须多于char，但没有规定具体占几个字节。窄字符和宽字符的表示方式分别是：char s[] = "narrow character"; wchar_t ws[] = L"wide character";
 
-【微软标准】在微软的编译器中，宽字符集被叫做“UNICODE字符集”，而且特指“UTF-16小端模式”（UTF-16 little endian），每个单位占两个字节，类型用wchar_t表示。
+【微软方案】在微软的编译器中，宽字符集被叫做“UNICODE字符集”，而且特指“UTF-16小端模式”（UTF-16 little endian），每个单位占两个字节，类型用wchar_t表示。
 
 微软还在C标准以外，私自定义了以下几个“C风格宽字符串”（以L'\0'结尾的宽字符数组）类型：
 
@@ -94,6 +94,6 @@ ISO的C和C++标准也有对应的窄字符集函数printf、strcat、strcmp和�
 ## 跨平台时要注意的几点 ##
 【ISO国际标准】ISO的C标准和C++标准只规定了窄字符char为一个字节，宽字符wchar_t的字节数大于char。没有规定wchar_t具体占几个字节。没有TCHAR这个东西，不存在&lt;tchar.h&gt;头文件。
 
-【微软标准】在微软的编译器中，char每个单位占一个字节，表示ANSI字符集；wchar_t占两个字节，表示UTF-16小端模式。可以用TCHAR类型（在&lt;tchar.h&gt;头文件中），并用是否定义UNICODE宏和_UNICODE宏来切换。
+【微软方案】在微软的编译器中，char每个单位占一个字节，表示ANSI字符集；wchar_t占两个字节，表示UTF-16小端模式。可以用TCHAR类型（在&lt;tchar.h&gt;头文件中），并用是否定义UNICODE宏和_UNICODE宏来切换。
 
 【Linux通常情况】在大多数Linux下的编译器中，char每个单位占一个字节，通常表示UTF-8字符集；wchar_t占四个字节，表示UTF-32字符集，大小端与CPU相关。没有TCHAR这种东西。
