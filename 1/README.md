@@ -3,7 +3,7 @@
 
 ## VC/VS版本的字符集问题 ##
 
-自从VC6.0开始，就已经支持UNICODE字符集，但是VC6.0**默认**的是“多字节字符集”（MBCS），使用UNICODE字符集需要自行在项目中定义UNICODE宏和_UNICODE宏；然而VS.NET2002以及更高版本**默认**的却是UNICODE字符集，即定义了UNICODE宏和_UNICODE宏，除非你在项目属性中人工指定使用“多字节字符集”（MBCS），那样就不会定义UNICODE宏和_UNICODE宏。
+自从VC6.0开始，就已经支持UNICODE字符集，但是VC6.0<strong>默认</strong>的是“多字节字符集”（MBCS），使用UNICODE字符集需要自行在项目中定义UNICODE宏和_UNICODE宏；然而VS.NET2002以及更高版本<strong>默认</strong>的却是UNICODE字符集，即定义了UNICODE宏和_UNICODE宏，除非你在项目属性中人工指定使用“多字节字符集”（MBCS），那样就不会定义UNICODE宏和_UNICODE宏。
 
 VS2013的MFC更是完全废除了MBCS，使用MBCS会给编译错误信息：MBCS is depreciated。
 
