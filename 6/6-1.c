@@ -162,7 +162,7 @@ int main(void)
 			cmd = IPC_RMID;
 			if ( msgctl(msqid, cmd, &buf) == -1 )
 			{
-				perror("(client) msgctl IPC_RMID failed");
+				perror("(parent) msgctl IPC_RMID failed");
 				exit(EXIT_FAILURE);
 			}
 			return EXIT_SUCCESS;
