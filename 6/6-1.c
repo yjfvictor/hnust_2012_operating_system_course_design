@@ -150,9 +150,15 @@ int main(void)
 				printf("(parent) the exit code of server process is %d\n", WEXITSTATUS(server_status));
 
 
-			// 在msgctl函数中传入IPC_RMID参数，表示删除掉指定消息队列
 			msgflg = IPC_CREAT | 0600;
 			msqid = msgget(key, msgflg);
+			if ( msqid == -1 )
+			{
+				perror("(parent) msgget failed");
+				exit(EXIT_FAILURE);
+			}
+
+			// 在msgctl函数中传入IPC_RMID参数，表示删除掉指定消息队列
 			cmd = IPC_RMID;
 			if ( msgctl(msqid, cmd, &buf) == -1 )
 			{
