@@ -3,7 +3,7 @@
 
 ## VC/VS版本的字符集问题 ##
 
-自从VC6.0开始，就已经支持UNICODE字符集，但是VC6.0<strong>默认</strong>的是“多字节字符集”（MBCS），使用UNICODE字符集需要自行在项目中定义UNICODE宏和_UNICODE宏；然而VS.NET2002以及更高版本<strong>默认</strong>的却是UNICODE字符集，即定义了UNICODE宏和_UNICODE宏，除非你在项目属性中人工指定使用“多字节字符集”（MBCS），那样就不会定义UNICODE宏和_UNICODE宏。
+自从VC6.0开始，就已经支持UNICODE字符集，但是VC6.0<strong>默认</strong>的是“多字节字符集”（MBCS），使用UNICODE字符集需要自行在项目中定义`UNICODE`宏和`_UNICODE`宏；然而VS.NET2002以及更高版本<strong>默认</strong>的却是UNICODE字符集，即定义了`UNICODE`宏和`_UNICODE`宏，除非你在项目属性中人工指定使用“多字节字符集”（MBCS），那样就不会定义`UNICODE`宏和`_UNICODE`宏。
 
 VS2013的MFC更是完全废除了MBCS，使用MBCS会给编译错误信息：MBCS is depreciated。
 
@@ -33,7 +33,7 @@ VS2013的MFC更是完全废除了MBCS，使用MBCS会给编译错误信息：MBC
 
 Unicode（ISO/IEC 10646）的字符编码有三种“表示方式”，分别是UTF-8、UTF-16、UTF-32。后两者又有大小端的区别（读者可自行搜索“大端模式”和“小端模式”，这里不细讲）。
 
-【ISO国际标准】根据ISO的C标准和C++标准，字符类型有两种：一种叫做“窄字符”（narrow character），用char表示，每个单位占一个字节；另一种叫做“宽字符”（wide character），用wchar_t表示，每个单位占的字节数必须多于char，但没有规定具体占几个字节。窄字符和宽字符的表示方式分别是：char s[] = "narrow character"; wchar_t ws[] = L"wide character";
+【ISO国际标准】根据ISO的C标准和C++标准，字符类型有两种：一种叫做“窄字符”（narrow character），用char表示，每个单位占一个字节；另一种叫做“宽字符”（wide character），用wchar_t表示，每个单位占的字节数必须多于char，但没有规定具体占几个字节。窄字符和宽字符的表示方式分别是：`char s[] = "narrow character";` 和 `wchar_t ws[] = L"wide character";`。
 
 【微软方案】在微软的编译器中，宽字符集被叫做“UNICODE字符集”，而且特指“UTF-16小端模式”（UTF-16 little endian），每个单位占两个字节，类型用wchar_t表示。
 
@@ -45,7 +45,7 @@ Unicode（ISO/IEC 10646）的字符编码有三种“表示方式”，分别是
     typedef CONST WCHAR *LPCWSTR, *PCWSTR;
 
 ### TCHAR类型 ###
-为了便于在ANSI字符集和UNICODE字符集之间的切换，微软私自定义了一个字符类型——TCHAR。在&lt;winnt.h&gt;中定义如下：
+为了便于在ANSI字符集和UNICODE字符集之间的切换，微软私自定义了一个字符类型——`TCHAR`。在&lt;winnt.h&gt;中定义如下：
 
     typedef wchar_t WCHAR;
     #ifdef  UNICODE
@@ -58,7 +58,7 @@ Unicode（ISO/IEC 10646）的字符编码有三种“表示方式”，分别是
     typedef LPCSTR PCTSTR, LPCTSTR, PCUTSTR, LPCUTSTR;
     #endif
 
-此外，微软还在&lt;winnt.h&gt;定义了TEXT宏：
+此外，微软还在&lt;winnt.h&gt;定义了`TEXT`宏：
 
     #ifdef  UNICODE
     #define __TEXT(quote) L##quote
@@ -67,7 +67,7 @@ Unicode（ISO/IEC 10646）的字符编码有三种“表示方式”，分别是
     #endif
     #define TEXT(quote) __TEXT(quote)
 
-微软还在&lt;tchar.h&gt;头文件中定义了_T宏和_TEXT宏：
+微软还在&lt;tchar.h&gt;头文件中定义了`_T`宏和`_TEXT`宏：
 
     #ifdef _UNICODE
     #define __T(x)      L ## x
@@ -94,6 +94,6 @@ ISO的C和C++标准也有对应的窄字符集函数printf、strcat、strcmp和�
 ## 跨平台时要注意的几点 ##
 【ISO国际标准】ISO的C标准和C++标准只规定了窄字符char为一个字节，宽字符wchar_t的字节数大于char。没有规定wchar_t具体占几个字节。没有TCHAR这个东西，不存在&lt;tchar.h&gt;头文件。
 
-【微软方案】在微软的编译器中，char每个单位占一个字节，表示ANSI字符集；wchar_t占两个字节，表示UTF-16小端模式。可以用TCHAR类型（在&lt;tchar.h&gt;头文件中），并用是否定义UNICODE宏和_UNICODE宏来切换。
+【微软方案】在微软的编译器中，char每个单位占一个字节，表示ANSI字符集；wchar_t占两个字节，表示UTF-16小端模式。可以用TCHAR类型（在&lt;tchar.h&gt;头文件中），并用是否定义`UNICODE`宏和`_UNICODE`宏来切换。
 
 【Linux通常情况】在大多数Linux下的编译器中，char每个单位占一个字节，通常表示UTF-8字符集；wchar_t占四个字节，表示UTF-32字符集，大小端与CPU相关。没有TCHAR这种东西。
