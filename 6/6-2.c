@@ -63,6 +63,11 @@ void server(void)
 		{ }
 		puts("(server) received");
 	} while ( shmaddr[0] != 0 );
+
+	// 释放共享内存映射区的内存
+	if ( shmdt((const void *)shmaddr) == -1 )
+		perror("(server) shmdt failed");
+	shmaddr = NULL;
 }
 
 void client(void)
@@ -96,6 +101,10 @@ void client(void)
 		shmaddr[0] = i;
 		puts("(client) sent");
 	}
+
+	if ( shmdt((const void *)shmaddr) == -1 )
+		perror("(client) shmdt failed");
+	shmaddr = NULL;
 }
 
 int main(void)
