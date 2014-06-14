@@ -1,9 +1,9 @@
-/*
- *  ʵ��� �嵥2-2 ���ӽ��̵ļ�ͨ�ż���ֹ��ʾ������
+﻿/*
+ *  实验二 清单2-2 父子进程的简单通信及终止的示例程序
  *
  *
- *                            Ҷ����
- *                            2014��6��13��
+ *                            叶剑飞
+ *                            2014年6月13日
  */
 
 #include <stdio.h>
@@ -13,10 +13,10 @@
 #include <locale.h>
 #include <Windows.h>
 
-// �����������
+// 互斥体的名字
 static LPCTSTR g_szMutexName = TEXT("w2kdg.ProcTerm.mutex.Suicide");
 
-// �����ӽ��̵ĺ���
+// 创建子进程的函数
 BOOL StartClone(void)
 {
 	TCHAR szFilename[MAX_PATH];
@@ -25,42 +25,42 @@ BOOL StartClone(void)
 	PROCESS_INFORMATION pi;
 	BOOL bCreateOK;
 
-	// ��õ�ǰ���̵Ŀ�ִ���ļ����ļ���
+	// 获得当前进程的可执行文件的文件名
 	GetModuleFileName(NULL, szFilename, MAX_PATH);
 
-	// ���������в���
+	// 构造命令行参数
 	_stprintf(szCommandLine, TEXT("\"%s\" child"), szFilename);
-	// ʵ��2-2����3�����Ͼ��е��ַ���"child"��Ϊ����ַ��������±���ִ��
+	// 实验2-2步骤3：将上句中的字符串"child"改为别的字符串，重新编译执行
 
-	// ע��ע�⣺������������ᵼ��ÿ���ӽ��̶�����Parent�������Ӷ��������޿����̣����ս�����Դ�ľ�������������
-	// ����֮ǰ����˼���������һ��Ҫ��������ȷ���Ѿ������������Ҫ���ϣ�����
+	// 注意注意：上面这个操作会导致每个子进程都调用Parent函数，从而导致无限开进程，最终进程资源耗尽，死机！！！
+	// 操作之前请三思！！！如果一定要操作，请确保已经保存好所有重要资料！！！
 
-	// ��ʼ������������Ϣ
+	// 初始化进程启动信息
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
 
 	bCreateOK = CreateProcess(
-		szFilename,           // ��ִ���ļ���·��
-		szCommandLine,        // �������̵������в���
-		NULL,                 // ���̰�ȫ��
-		NULL,                 // �̰߳�ȫ��
-		FALSE,                // �þ�����ɼ̳�
-		CREATE_NEW_CONSOLE,   // ���µĿ���̨�������������
-		NULL,                 // ָ���´����Ľ��̵Ļ�����ָ�롣NULL��ʾʹ�ø����̵Ļ����������
-		NULL,                 // ���´����Ľ��̸���ĵ�ǰĿ¼�ľ���·����֧��UNC·����NULL��ʾ�ø����̵ĵ�ǰĿ¼��
-		&si,                  // �����½��̵ĳ�ʼ��������Ϣ
-		&pi                   // �����½��̵���Ϣ
+		szFilename,           // 可执行文件的路径
+		szCommandLine,        // 启动进程的命令行参数
+		NULL,                 // 进程安全性
+		NULL,                 // 线程安全性
+		FALSE,                // 该句柄不可继承
+		CREATE_NEW_CONSOLE,   // 在新的控制台中启动这个进程
+		NULL,                 // 指向新创建的进程的环境块指针。NULL表示使用父进程的环境块变量。
+		NULL,                 // 给新创建的进程赋予的当前目录的绝对路径，支持UNC路径。NULL表示用父进程的当前目录。
+		&si,                  // 传入新进程的初始化参数信息
+		&pi                   // 传出新进程的信息
 		);
 
 	if (bCreateOK)
 	{
-		// �ͷ��ӽ��̵Ľ��̾��
+		// 释放子进程的进程句柄
 		CloseHandle(pi.hProcess);
-		// �ͷ��ӽ��̵����̵߳��߳̾��
+		// 释放子进程的主线程的线程句柄
 		CloseHandle(pi.hThread);
 	}
 	else
-		_ftprintf(stderr, TEXT("�����ӽ���ʧ��\n"));
+		_ftprintf(stderr, TEXT("创建子进程失败\n"));
 
 	return bCreateOK;
 }
@@ -69,33 +69,33 @@ void Child(void)
 {
 	DWORD dwLastError = 0;
 
-	// �򿪻����壬�������������ľ����
+	// 打开互斥体，返回这个互斥体的句柄。
 	HANDLE hMutexSuicide = OpenMutex(
-		SYNCHRONIZE,      // �����ȡͬ��Ȩ�޵Ļ�������
-		FALSE,            // �þ�����ɼ̳�
-		g_szMutexName     // �����������
+		SYNCHRONIZE,      // 申请获取同步权限的互斥体句柄
+		FALSE,            // 该句柄不可继承
+		g_szMutexName     // 互斥体的名字
 		);
 	if (hMutexSuicide == NULL)
 	{
 		dwLastError = GetLastError();
 		if (dwLastError == ERROR_FILE_NOT_FOUND)
-			_ftprintf(stderr, TEXT("����Ϊ%s�Ļ�����ʧ�ܡ��û����岻���ڡ�\n"), g_szMutexName);
+			_ftprintf(stderr, TEXT("打开名为%s的互斥体失败。该互斥体不存在。\n"), g_szMutexName);
 		exit(EXIT_FAILURE);
 	}
 
-	_tprintf(TEXT("�ӽ������ڵȴ������̷��͹ر�����\n"));
+	_tprintf(TEXT("子进程正在等待父进程发送关闭命令\n"));
 
-	// �ӽ��̽�������״̬���ȴ��������ͷŻ�����
+	// 子进程进入阻塞状态，等待父进程释放互斥体
 	WaitForSingleObject(hMutexSuicide, INFINITE);
-	// ʵ��2-2����5�����Ͼ��ΪWaitForSingleObject(hMutexSuicide, 0);���±���ִ��
-	// Ԥ�棺���������Ľ�������ӽ��������˳������ȴ��������ͷŻ�����
+	// 实验2-2步骤5，将上句改为WaitForSingleObject(hMutexSuicide, 0);重新编译执行
+	// 预告：上述操作的结果就是子进程立刻退出。不等待父进程释放互斥体
 
-	_tprintf(TEXT("�ӽ��������˳�\n"));
+	_tprintf(TEXT("子进程正在退出\n"));
 
-	// �رջ�������
+	// 关闭互斥体句柄
 	CloseHandle(hMutexSuicide);
 
-	// ������������
+	// 结束自身进程
 	exit(EXIT_SUCCESS);
 }
 
@@ -103,42 +103,42 @@ void Parent(void)
 {
 	DWORD dwLastError = 0;
 
-	// ����������
+	// 创建互斥体
 	HANDLE hMutexSuicide = CreateMutex(
-		NULL,          // ������İ�ȫ�Բ�����NULL��ʾȡȱʡֵ
-		TRUE,          // �Ըû�����ӵ������Ȩ
-		g_szMutexName  // �����������
+		NULL,          // 互斥体的安全性参数。NULL表示取缺省值
+		TRUE,          // 对该互斥体拥有所有权
+		g_szMutexName  // 互斥体的名字
 		);
 	if (hMutexSuicide ==NULL)
 	{
 		dwLastError = GetLastError();
 		if (dwLastError == ERROR_ALREADY_EXISTS)
-			_ftprintf(stderr, TEXT("������Ϊ%s�Ļ�����ʧ�ܡ��������ѱ�ռ�á�\n"), g_szMutexName);
+			_ftprintf(stderr, TEXT("创建名为%s的互斥体失败。该名字已被占用。\n"), g_szMutexName);
 		else if (dwLastError == ERROR_ACCESS_DENIED)
-			_ftprintf(stderr, TEXT("��Ȩ�޴�����Ϊ%s�Ļ�����\n"), g_szMutexName);
+			_ftprintf(stderr, TEXT("无权限创建名为%s的互斥体\n"), g_szMutexName);
 		else
-			_ftprintf(stderr, TEXT("��������Ϊ%s�Ļ����崴��ʧ�ܣ�������Ϊ0x%x��\n"), g_szMutexName, dwLastError);
+			_ftprintf(stderr, TEXT("互斥体名为%s的互斥体创建失败，错误码为0x%x。\n"), g_szMutexName, dwLastError);
 		exit(EXIT_FAILURE);
 	}
 
-	_tprintf(TEXT("��ʼ�����ӽ���\n"));
+	_tprintf(TEXT("开始创建子进程\n"));
 
-	// �����ӽ���
+	// 创建子进程
 	if (!StartClone())
 	{
-		_tprintf(TEXT("�����ӽ���ʧ��\n"));
+		_tprintf(TEXT("创建子进程失败\n"));
 		exit(EXIT_FAILURE);
 	}
 
-	_tprintf(TEXT("�밴�»س����ر��ӽ���\n"));
+	_tprintf(TEXT("请按下回车键关闭子进程\n"));
 
-	// �ȴ������̵ļ�����Ӧ
+	// 等待父进程的键盘响应
 	_gettchar();
 
-	// �ͷŻ����塣����źŻᷢ�͸��ӽ��̵�WaitForSingleObject����
+	// 释放互斥体。这个信号会发送给子进程的WaitForSingleObject函数
 	ReleaseMutex(hMutexSuicide);
 
-	// �رջ�������
+	// 关闭互斥体句柄
 	CloseHandle(hMutexSuicide);
 }
 
