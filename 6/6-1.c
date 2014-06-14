@@ -102,7 +102,7 @@ int main(void)
 	int msgflg;
 	int msqid;
 
-	// 创建子进程——进程分叉
+	// 进程分叉——Unix和Linux下的创建子进程的方式
 	if ( (fork_result = fork()) == -1 )
 	{
 		// fork的返回值为-1,表示进程创建失败
