@@ -411,3 +411,6 @@ System V 共享内存段控制操作
 #### 返回值说明 ####
        
 如果操作失败，则返回-1，并置errno值。如果操作成功，则返回0。
+
+## 多进程的gdb调试说明 ##
+进程在fork的时候被创建，gdb默认只跟踪调试父进程。如果要跟踪调试子进程，那么请在fork运行之前，在gdb提示符`(gdb)`后面键入`set follow-fork-mode child`命令，然后调试到fork之后，gdb就会跟踪到子进程中。如果已经设置了`set follow-fork-mode child`，又遇到了fork，现在如果又想跟踪调试父进程，那么请在fork运行之前，在gdb提示符`(gdb)`后面键入`set follow-fork-mode parent`命令，然后调试到fork之后，gdb就会跟踪到父进程中。
