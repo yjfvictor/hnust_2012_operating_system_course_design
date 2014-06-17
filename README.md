@@ -7,7 +7,7 @@ This project is the demo code for Hunan University of Science of Technology 2012
 
 有人问这个md文件怎么打开。这个很简单。md文件是Markdown语言源文件，属于纯文本文件，用一般的纯文件编辑器都可以查看。如果需要看即时预览的效果，在Windows操作系统中可以用[MardownPad](http://markdownpad.com/)来即时预览。在Linux操作系统中可以用[ReText](http://sourceforge.net/projects/retext/)来即时预览，一般可以用 `sudo apt-get install retext` 命令或 `sudo yum install retext` 命令来下载安装ReText。在Mac OS X操作系统中可以用[Mou](http://mouapp.com/)来即时预览。
 
-Someone has asked how to open the md file. It is very easy. File with extension md stands for the Markdown source file, belonging to plain text file type, and therefore can be opened by any plain text editor. If instance preview is needed, you can use [MardownPad](http://markdownpad.com/) in Windows, [ReText](http://sourceforge.net/projects/retext/) in Linux (easily, `sudo apt-get install retext` command or `sudo yum install retext` command), or [Mou](http://mouapp.com/) in Mac OS X.
+Someone has asked how to open the md file. It is very easy. File with extension md stands for the Markdown source file, belonging to plain text file type, and therefore can be opened by any plain text editor. If instance preview is needed, you can use [MardownPad](http://markdownpad.com/) in Windows, [ReText](http://sourceforge.net/projects/retext/) in Linux (just simply type `sudo apt-get install retext` command or `sudo yum install retext` command), or [Mou](http://mouapp.com/) in Mac OS X.
 
 ## 实验一 Windows进程初识 ##
 
