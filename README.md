@@ -1,7 +1,7 @@
 # 湖南科技大学2012级操作系统课程设计代码 #
 # Hunan University of Science of Technology <br /> 2012 Operating System Course Design #
 
-本项目为湖南科技大学2012级操作系统课程设计的示例代码。由于本届的的《操作系统课程设计指导书》中的示例代码错误实在过多，多到已经实在是<strong>不忍直视</strong>的程度，故我特此写一份正确的示例代码。希望同学们能够得到正确的指引。
+本项目为湖南科技大学2012级操作系统课程设计的示例代码。由于本届的《操作系统课程设计指导书》中的示例代码错误实在过多，多到已经实在是<strong>不忍直视</strong>的程度，故我特此写一份正确的示例代码。希望同学们能够得到正确的指引。
 
 This project is the demo code for Hunan University of Science of Technology 2012 Operating System Course Design. There are too many errors in "Guidebook of Operating System Course Design" and therefore it <strong>really cannot be tolerated</strong>. As a result, I write the demo code on purpose. May the schoolmates can get proper guidance.
 
