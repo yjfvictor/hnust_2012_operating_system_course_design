@@ -1,3 +1,11 @@
+#
+# 实验六的Makefile
+#
+#
+#           叶剑飞
+#           2014年6月18日
+#
+
 CC=gcc
 #STANDARD=-ansi -pedantic-errors
 DEBUG_OPTION=-ggdb
