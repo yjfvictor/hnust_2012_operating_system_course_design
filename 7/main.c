@@ -35,6 +35,18 @@ void keyboard_interrupt(int number)
 	output_shell_prompt();
 }
 
+void destroy_argv(char *** pargv)
+{
+	char ** p;
+	for ( p = *pargv; *p != NULL; ++ p )
+	{
+		free(*p);
+		*p = NULL;
+	}
+	free(*pargv);
+	*pargv = NULL;
+}
+
 bool login(void)
 {
 #ifdef _DEBUG
@@ -103,7 +115,7 @@ int main(int argc, char * argv[])
 		if ( !( split_command(command, &cmd_argc, &cmd_argv) && run_command(cmd_argc, cmd_argv) ) )
 			print_last_error();
 
-		free(cmd_argv);
+		destroy_argv(&cmd_argv);
 
 		output_shell_prompt();
 	}
