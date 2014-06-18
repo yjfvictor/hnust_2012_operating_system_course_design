@@ -1,5 +1,6 @@
 #include "common.h"
 #include "deal_command.h"
+#include <getopt.h>
 
 bool split_command(const char * command, int * pargc, char *** pargv)
 {
@@ -21,7 +22,7 @@ bool split_command(const char * command, int * pargc, char *** pargv)
 	return false;
 }
 
-bool run_command(int argc, const char * argv[])
+bool run_command(int argc, char * const * argv)
 {
 	int i;
 	char directory[MAX_COMMAND_LENGTH];
@@ -38,6 +39,36 @@ bool run_command(int argc, const char * argv[])
 
 	if ( !strcmp(argv[0], "ls") || !strcmp(argv[0], "dir") )
 	{
+		int c;
+		int option_index = 0;
+		const struct option long_options[] = {
+			{ "all",	0, NULL, 'a' },
+			{ "almost-all",	0, NULL, 'A' },
+			{ "inode",	0, NULL, 'i' },
+			{ NULL,		0, NULL, 0 }
+		};
+		while ( true )
+		{
+			c = getopt_long(argc, argv, "aAli", long_options, &option_index);
+      			if (c == -1)
+				break;
+
+			switch(c)
+			{
+				case 'a':
+					break;
+				case 'A':
+					break;
+				case 'l':
+					break;
+				case 'i':
+					break;
+				case '?':
+					break;
+				default:
+					break;
+			}
+		}
 		return true;
 	}
 
@@ -45,6 +76,7 @@ bool run_command(int argc, const char * argv[])
 	{
 		for ( i = 1; i < argc; ++ i )
 			cat( argv[i] );
+		puts("");
 		return true;
 	}
 
@@ -71,6 +103,30 @@ bool run_command(int argc, const char * argv[])
 
 	if ( !strcmp(argv[0], "rm") )
 	{
+		int c;
+		int option_index = 0;
+		const struct option long_options[] = {
+			{ "force",	0, NULL, 'f' },
+			{ NULL,		0, NULL, 0 }
+		};
+		while ( true )
+		{
+			c = getopt_long(argc, argv, "rf", long_options, &option_index);
+      			if (c == -1)
+				break;
+
+			switch(c)
+			{
+				case 'r':
+					break;
+				case 'f':
+					break;
+				case '?':
+					break;
+				default:
+					break;
+			}
+		}
 		return true;
 	}
 
