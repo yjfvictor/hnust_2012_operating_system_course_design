@@ -13,9 +13,20 @@ bool split_command(const char * command, int * pargc, char *** pargv)
 
 	for( *pargc = 0, p = command_operation; *pargc < MAX_SEPERATORS; ++(*pargc), p = NULL )
 	{
-		(*pargv)[*pargc] = strtok_r( p, " ", &saveptr );
-		if ( (*pargv)[*pargc] == NULL )
+		p = strtok_r( p, " ", &saveptr );
+		if ( p == NULL )
+		{
+			(*pargv)[*pargc] = NULL;
 			return true;
+		}
+		(*pargv)[*pargc] = (char *)malloc( (MAX_PATH+1) * sizeof(char));
+		if ((*pargv)[*pargc] == NULL)
+		{
+			fprintf(stderr, "No sufficient memory\n");
+			exit(EXIT_FAILURE);
+		}
+		memset((*pargv)[*pargc], 0, sizeof(MAX_PATH+1));
+		strncpy((*pargv)[*pargc], p, MAX_PATH);
 	}
 
 	strcpy(lastError, "Command too long");
@@ -41,13 +52,17 @@ bool run_command(int argc, char * const * argv)
 	{
 		int c;
 		int option_index = 0;
+		char filename[MAX_PATH];
+		memset(filename, 0, sizeof(filename));
+		bool all = false, almost_all = false, long_list = false;
 		const struct option long_options[] = {
 			{ "all",	0, NULL, 'a' },
 			{ "almost-all",	0, NULL, 'A' },
 			{ NULL,		0, NULL, 0 }
 		};
 
-		opterr = 0;
+		optarg = NULL;
+		optind = 0;
 
 		while ( true )
 		{
@@ -58,20 +73,20 @@ bool run_command(int argc, char * const * argv)
 			switch(c)
 			{
 				case 'a':
+					all = true;
 					break;
 				case 'A':
+					almost_all = true;
 					break;
 				case 'l':
-					break;
-				case 'i':
-					break;
-				case '?':
+					long_list = true;
 					break;
 				default:
+					return true;
 					break;
 			}
 		}
-		return true;
+		return ls(current_path, all, almost_all, long_list, filename);
 	}
 
 	if ( !strcmp(argv[0], "cat" ) )
@@ -106,33 +121,37 @@ bool run_command(int argc, char * const * argv)
 	if ( !strcmp(argv[0], "rm") )
 	{
 		int c;
+		bool recursive = false, force = false;
 		int option_index = 0;
 		const struct option long_options[] = {
+			{ "recursive",	0, NULL, 'r' },
 			{ "force",	0, NULL, 'f' },
 			{ NULL,		0, NULL, 0 }
 		};
 
-		opterr = 0;
-
 		while ( true )
 		{
-			c = getopt_long(argc, argv, "rf", long_options, &option_index);
+			c = getopt_long(argc, argv, "rRf", long_options, &option_index);
       			if (c == -1)
 				break;
 
 			switch(c)
 			{
 				case 'r':
+				case 'R':
+					recursive = true;
 					break;
 				case 'f':
+					force = true;
 					break;
 				case '?':
+					return true;
 					break;
 				default:
 					break;
 			}
 		}
-		return true;
+		return rm( current_path, &(argv[optind]), recursive, force );
 	}
 
 	return true;

@@ -12,9 +12,26 @@
 
 #include "common.h"
 #include "parse_string.h"
+#include <signal.h>
+
+void output_shell_prompt(void)
+{
+	printf("[%s@%s %s] $ ", username, hostname, current_path);
+	fflush(stdout);
+}
+
+void keyboard_interrupt(int number)
+{
+	puts("");
+	output_shell_prompt();
+}
 
 bool login(void)
 {
+	strcpy(username, "victor");
+	strcpy(hostname, "victor-host");
+	return true;
+	/*
 	char password[MAX_NAME];
 	strcpy(hostname, "victor-host");
 	
@@ -29,6 +46,7 @@ bool login(void)
 		return true;
 	else
 		return false;
+	*/
 }
 
 int main(int argc, char * argv[])
@@ -37,6 +55,9 @@ int main(int argc, char * argv[])
 	char ** cmd_argv;
 
 	char command[MAX_COMMAND_LENGTH];
+
+	signal(SIGINT, keyboard_interrupt);
+	signal(SIGQUIT, keyboard_interrupt);
 
 	if ( argc != 2 )
 	{
@@ -52,8 +73,7 @@ int main(int argc, char * argv[])
 
 	strcpy(current_path, "/");
 
-	printf("[%s@%s %s] $ ", username, hostname, current_path);
-	fflush(stdout);
+	output_shell_prompt();
 
 	while ( fgets( command, MAX_COMMAND_LENGTH, stdin ) != NULL )
 	{
@@ -67,8 +87,7 @@ int main(int argc, char * argv[])
 
 		free(cmd_argv);
 
-		printf("[%s@%s %s] $ ", username, hostname, current_path);
-		fflush(stdout);
+		output_shell_prompt();
 	}
 
 	puts("");
