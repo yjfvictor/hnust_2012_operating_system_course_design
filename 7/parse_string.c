@@ -47,6 +47,9 @@ bool run_command(int argc, char * const * argv)
 			{ "inode",	0, NULL, 'i' },
 			{ NULL,		0, NULL, 0 }
 		};
+
+		opterr = 0;
+
 		while ( true )
 		{
 			c = getopt_long(argc, argv, "aAli", long_options, &option_index);
@@ -109,6 +112,9 @@ bool run_command(int argc, char * const * argv)
 			{ "force",	0, NULL, 'f' },
 			{ NULL,		0, NULL, 0 }
 		};
+
+		opterr = 0;
+
 		while ( true )
 		{
 			c = getopt_long(argc, argv, "rf", long_options, &option_index);
