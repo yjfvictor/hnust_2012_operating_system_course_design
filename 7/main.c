@@ -13,11 +13,20 @@
 #include "common.h"
 #include "parse_string.h"
 #include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/fcntl.h>
 
 void output_shell_prompt(void)
 {
 	printf("[%s@%s %s] $ ", username, hostname, current_path);
 	fflush(stdout);
+}
+
+void exit_func(void)
+{
+	close(fd_ext2);
+	fd_ext2 = 0;
 }
 
 void keyboard_interrupt(int number)
@@ -28,10 +37,11 @@ void keyboard_interrupt(int number)
 
 bool login(void)
 {
+#ifdef _DEBUG
 	strcpy(username, "victor");
 	strcpy(hostname, "victor-host");
 	return true;
-	/*
+#else
 	char password[MAX_NAME];
 	strcpy(hostname, "victor-host");
 	
@@ -46,7 +56,7 @@ bool login(void)
 		return true;
 	else
 		return false;
-	*/
+#endif
 }
 
 int main(int argc, char * argv[])
@@ -70,6 +80,14 @@ int main(int argc, char * argv[])
 		fprintf(stderr, "Password error. Log in failed.\n");
 		return EXIT_FAILURE;
 	}
+
+	fd_ext2 = open(argv[1], O_RDWR);
+	if ( fd_ext2 == -1 )
+	{
+		perror("Error reading the ext2 file");
+		return EXIT_FAILURE;
+	}
+	atexit(exit_func);
 
 	strcpy(current_path, "/");
 

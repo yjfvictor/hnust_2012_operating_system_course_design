@@ -17,5 +17,6 @@ char username[MAX_NAME];
 char hostname[MAX_NAME];
 char current_path[MAX_PATH];
 char lastError[MAX_NAME];
+int  fd_ext2;
 
 #endif // _COMMON_H
