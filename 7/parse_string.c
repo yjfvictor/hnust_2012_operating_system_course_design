@@ -151,7 +151,7 @@ bool run_command(int argc, char * const * argv)
 					break;
 			}
 		}
-		return rm( current_path, &(argv[optind]), recursive, force );
+		return rm( current_path, (const char * const* const)&(argv[optind]), recursive, force );
 	}
 
 	return true;

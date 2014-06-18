@@ -1,4 +1,5 @@
 #include "common.h"
+#include "ext2.h"
 
 bool ls( const char * path, bool all, bool almost_all, bool long_list, const char * filename )
 {
