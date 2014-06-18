@@ -16,5 +16,6 @@
 char username[MAX_NAME];
 char hostname[MAX_NAME];
 char current_path[MAX_PATH];
+char lastError[MAX_NAME];
 
 #endif // _COMMON_H

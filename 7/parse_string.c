@@ -1,26 +1,5 @@
 #include "common.h"
-
-static char lastError[MAX_NAME] = "";
-
-bool ls( const char * path )
-{
-	return true;
-}
-
-bool cd(const char * path)
-{
-	return true;
-}
-
-bool cat( const char * path )
-{
-	return true;
-}
-
-bool rm( const char * path )
-{
-	return true;
-}
+#include "deal_command.h"
 
 bool split_command(const char * command, int * pargc, char *** pargv)
 {
