@@ -44,7 +44,6 @@ bool run_command(int argc, char * const * argv)
 		const struct option long_options[] = {
 			{ "all",	0, NULL, 'a' },
 			{ "almost-all",	0, NULL, 'A' },
-			{ "inode",	0, NULL, 'i' },
 			{ NULL,		0, NULL, 0 }
 		};
 
@@ -52,7 +51,7 @@ bool run_command(int argc, char * const * argv)
 
 		while ( true )
 		{
-			c = getopt_long(argc, argv, "aAli", long_options, &option_index);
+			c = getopt_long(argc, argv, "aAl", long_options, &option_index);
       			if (c == -1)
 				break;
 
