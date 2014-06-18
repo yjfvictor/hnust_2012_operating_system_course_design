@@ -62,9 +62,7 @@ int main(int argc, char * argv[])
 		command[strlen(command) - 1] = '\0';
 
 		cmd_argv = (char **)malloc((MAX_SEPERATORS + 1) * sizeof(char *));
-		if ( split_command(command, &cmd_argc, &cmd_argv) )
-			run_command(cmd_argc, cmd_argv);
-		else
+		if ( !( split_command(command, &cmd_argc, &cmd_argv) && run_command(cmd_argc, cmd_argv) ) )
 			print_last_error();
 
 		free(cmd_argv);
