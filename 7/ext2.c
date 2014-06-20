@@ -4,7 +4,7 @@
 #define BLOCK_LENGTH 1024
 char useless_block[BLOCK_LENGTH];
 
-struct ext2_super_block super_block;
+static struct ext2_super_block super_block;
 
 void read_super_block_data(void)
 {

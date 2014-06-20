@@ -99,7 +99,7 @@ bool run_command(int argc, char * const * argv)
 			return ls(all, almost_all, long_list, (const char * const* const)&argv[optind]);
 	}
 
-	if ( !strcmp(argv[0], "cat" ) )
+	else if ( !strcmp(argv[0], "cat" ) )
 	{
 		for ( i = 1; i < argc; ++ i )
 			cat( argv[i] );
@@ -128,7 +128,7 @@ bool run_command(int argc, char * const * argv)
 		return cd(directory);
 	}
 
-	if ( !strcmp(argv[0], "rm") )
+	else if ( !strcmp(argv[0], "rm") )
 	{
 		int c;
 		bool recursive = false, force = false;
@@ -138,6 +138,9 @@ bool run_command(int argc, char * const * argv)
 			{ "force",	0, NULL, 'f' },
 			{ NULL,		0, NULL, 0 }
 		};
+
+		optarg = NULL;
+		optind = 0;
 
 		while ( true )
 		{
@@ -162,6 +165,12 @@ bool run_command(int argc, char * const * argv)
 			}
 		}
 		return rm( (const char * const* const)&(argv[optind]), recursive, force );
+	}
+
+	else
+	{
+		fprintf(stderr, "%s: command not found\n", argv[0]);
+		return true;
 	}
 
 	return true;
