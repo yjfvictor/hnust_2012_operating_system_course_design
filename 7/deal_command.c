@@ -1,27 +1,60 @@
 #include "common.h"
 #include "ext2.h"
+#include "parse_string.h"
 
-bool ls( const char * path, bool all, bool almost_all, bool long_list, const char * filename )
+bool ls( bool all, bool almost_all, bool long_list, const char * const * const list_path )
 {
+	char absolute_path[MAX_PATH];
+	const char * const * p = NULL;
+
+	if ( list_path == NULL )
+		output_files(current_path, all, almost_all, long_list);
+	else
+	{
+		for ( p = list_path; (*p) != NULL; ++ p )
+		{
+			get_absolute_path(absolute_path, *p);
+			output_files(absolute_path, all, almost_all, long_list);
+		}
+	}
 	return true;
 }
 
 bool cd(const char * path)
 {
-	return true;
+	char absolute_path[MAX_PATH];
+	assert(path != NULL);
+	get_absolute_path(absolute_path, path);
+
+	if ( exsit_path(absolute_path) )
+	{
+		strncpy(current_path, absolute_path, sizeof(current_path));
+		current_path[sizeof(current_path) - 1] = 0;
+		return true;
+	}
+	else
+		return false;
 }
 
 bool cat( const char * path )
 {
-	return true;
+	char absolute_path[MAX_PATH];
+	assert(path != NULL);
+	get_absolute_path(absolute_path, path);
+	return output_file_data(absolute_path);
 }
 
-bool rm( const char * current_path, const char * const * const remove_paths, bool recursive, bool force )
+bool rm( const char * const * const remove_paths, bool recursive, bool force )
 {
-	/*
-	const char * const * p;
+	char absolute_path[MAX_PATH];
+	const char * const * p = NULL;
+
+	assert(remove_paths != NULL);
 	for ( p = remove_paths; (*p) != NULL; ++ p )
-		puts(*p);
-	*/
+	{
+		get_absolute_path(absolute_path, *p);
+		if ( !remove_file(absolute_path) )
+			fprintf(stderr, "File %s does not exist\n", (*p));
+	}
 	return true;
 }

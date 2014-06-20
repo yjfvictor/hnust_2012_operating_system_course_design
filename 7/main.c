@@ -11,11 +11,12 @@
  */
 
 #include "common.h"
-#include "parse_string.h"
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/fcntl.h>
+#include "parse_string.h"
+#include "ext2.h"
 
 void output_shell_prompt(void)
 {
@@ -26,7 +27,7 @@ void output_shell_prompt(void)
 void exit_func(void)
 {
 	close(fd_ext2);
-	fd_ext2 = 0;
+	fd_ext2 = -1;
 }
 
 void keyboard_interrupt(int number)
@@ -102,6 +103,8 @@ int main(int argc, char * argv[])
 	atexit(exit_func);
 
 	strcpy(current_path, "/");
+
+	read_super_block_data();
 
 	output_shell_prompt();
 

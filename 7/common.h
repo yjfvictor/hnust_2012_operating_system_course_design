@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <assert.h>
 
 #define MAX_SEPERATORS 128
 #define MAX_NAME 256
