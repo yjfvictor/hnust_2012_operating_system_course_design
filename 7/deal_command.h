@@ -1,3 +1,10 @@
+/*
+ *   处理Shell命令的函数声明
+ *
+ *       叶剑飞
+ *
+ */
+
 #ifndef _DEAL_COMMAND_H
 #define _DEAL_COMMAND_H
 

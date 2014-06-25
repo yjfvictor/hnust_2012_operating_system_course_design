@@ -1,3 +1,12 @@
+/*
+ *   字符串解析函数
+ *
+ *
+ *
+ *                  叶剑飞
+ *                  2014年6月
+ */
+
 #include "common.h"
 #include "deal_command.h"
 #include <getopt.h>

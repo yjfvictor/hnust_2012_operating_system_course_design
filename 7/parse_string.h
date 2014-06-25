@@ -1,3 +1,12 @@
+/*
+ *
+ * 字符串解析的函数声明
+ *
+ *
+ *                  叶剑飞
+ *
+ */
+
 #ifndef _PARSE_STRING_H
 #define _PARSE_STRING_H
 

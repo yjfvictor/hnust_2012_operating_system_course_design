@@ -1,3 +1,14 @@
+/*
+ *
+ *  处理Shell命令的各个函数的实现
+ *
+ *
+ *                          叶剑飞
+ *                          2014年6月
+ *
+ *
+ */
+
 #include "common.h"
 #include "ext2.h"
 #include "parse_string.h"
@@ -26,14 +37,17 @@ bool cd(const char * path)
 	assert(path != NULL);
 	get_absolute_path(absolute_path, path);
 
-	if ( exsit_path(absolute_path) )
+	if ( exsit_dir_path(absolute_path) )
 	{
 		strncpy(current_path, absolute_path, sizeof(current_path));
 		current_path[sizeof(current_path) - 1] = '\0';
 		return true;
 	}
 	else
+	{
+		sprintf(lastError, "cd: %s: No such directory", path);
 		return false;
+	}
 }
 
 bool cat( const char * path )
@@ -54,7 +68,7 @@ bool rm( const char * const * const remove_paths, bool recursive, bool force )
 	{
 		get_absolute_path(absolute_path, *p);
 		if ( !remove_file(absolute_path) )
-			fprintf(stderr, "File %s does not exist\n", (*p));
+			fprintf(stderr, "rm: cannot remove ‘%s’: No such file or directory\n", (*p));
 	}
 	return true;
 }

@@ -1,3 +1,12 @@
+/*
+ *   通用的一些外部变量与一些通用的宏
+ *
+ *
+ *
+ *                           叶剑飞
+ *
+ */
+
 #ifndef _COMMON_H
 #define _COMMON_H
 

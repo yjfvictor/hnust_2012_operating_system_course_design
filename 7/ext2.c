@@ -1,3 +1,12 @@
+/*
+ *   ext2文件系统的读写、遍历等操作
+ *
+ *
+ *             叶剑飞
+ *             2014年6月
+ * 
+ */
+
 #include "common.h"
 #include "ext2_fs.h"
 #include "parse_string.h"
@@ -5,8 +14,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#define MAX_PERMISSION_STRING_LENGTH 12
 #define BASE_OFFSET 1024 
 #define BLOCK_OFFSET(block) (BASE_OFFSET + ( (block) - 1) * block_size)
+
 
 static struct ext2_super_block super;
 static unsigned int block_size = 0;
@@ -142,15 +153,73 @@ int get_file_inode_no(const char * absolute_path)
 	return inode_no;
 }
 
-void output_entry(const struct ext2_dir_entry_2 * entry, bool long_list)
+void output_entry(const struct ext2_dir_entry_2 * entry, bool long_list, int inode_no)
 {
 	char file_name[EXT2_NAME_LEN+1];
+	struct ext2_group_desc group;
+	struct ext2_inode inode;
+
 	memcpy(file_name, entry->name, entry->name_len);
 	file_name[entry->name_len] = '\0';
 
 	if ( long_list )
 	{
-		printf("%s\n", file_name);
+		char permission[MAX_PERMISSION_STRING_LENGTH];
+		memset(permission, 0, sizeof(permission));
+		read_group_descriptor(&group);
+		read_inode(&group, &inode, inode_no);
+
+		if ( S_ISDIR(inode.i_mode) )
+			permission[0] = 'd';
+		else
+			permission[0] = '-';
+
+		if ( inode.i_mode & S_IRUSR )
+			permission[1] = 'r';
+		else
+			permission[1] = '-';
+
+		if ( inode.i_mode & S_IWUSR )
+			permission[2] = 'w';
+		else
+			permission[2] = '-';
+	
+		if ( inode.i_mode & S_IXUSR )
+			permission[3] = 'x';
+		else
+			permission[3] = '-';
+	
+		if ( inode.i_mode & S_IRGRP )
+			permission[4] = 'r';
+		else
+			permission[4] = '-';
+	
+		if ( inode.i_mode & S_IWGRP )
+			permission[5] = 'w';
+		else
+			permission[5] = '-';
+	
+		if ( inode.i_mode & S_IXGRP )
+			permission[6] = 'x';
+		else
+			permission[6] = '-';
+	
+		if ( inode.i_mode & S_IROTH )
+			permission[7] = 'r';
+		else
+			permission[7] = '-';
+	
+		if ( inode.i_mode & S_IWOTH )
+			permission[8] = 'w';
+		else
+			permission[8] = '-';
+	
+		if ( inode.i_mode & S_IXOTH )
+			permission[9] = 'x';
+		else
+			permission[9] = '-';
+	
+		printf("%s\t%s\n", permission, file_name);
 	}
 	else
 		printf("%s\t", file_name);
@@ -161,6 +230,7 @@ void output_files( const char * absolute_path, bool all, bool almost_all, bool l
 	struct ext2_group_desc group;
 	struct ext2_inode inode;
 	void * block = NULL;
+
 	int inode_no = get_file_inode_no(absolute_path);
 	if ( inode_no == -1 )
 	{
@@ -169,6 +239,7 @@ void output_files( const char * absolute_path, bool all, bool almost_all, bool l
 	}
 	read_group_descriptor(&group);
 	read_inode(&group, &inode, inode_no);
+
 	if (S_ISDIR(inode.i_mode))
 	{
 		struct ext2_dir_entry_2 * entry = NULL;
@@ -189,15 +260,15 @@ void output_files( const char * absolute_path, bool all, bool almost_all, bool l
 			if ( entry->name[0] == '.' )
 			{
 				if ( all )
-					output_entry(entry, long_list);
+					output_entry(entry, long_list, entry->inode);
 				else if ( almost_all )
 				{
 					if ( strcmp(entry->name, ".") && strcmp(entry->name, "..") )
-						output_entry(entry, long_list);
+						output_entry(entry, long_list, entry->inode);
 				}
 			}
 			else
-				output_entry(entry, long_list);
+				output_entry(entry, long_list, entry->inode);
 			entry = (struct ext2_dir_entry_2 *)((void *)entry + entry->rec_len);
 			size += entry->rec_len;
 		}
@@ -214,20 +285,181 @@ bool exsit_path(const char * absolute_path)
 {
 	assert(absolute_path != NULL);
 	assert(absolute_path[0] == '/');
+
+	if ( get_file_inode_no(absolute_path) == -1 )
+		return false;
+
 	return true;
+}
+
+bool exsit_dir_path(const char * absolute_path)
+{
+	struct ext2_group_desc group;
+	struct ext2_inode inode;
+	int inode_no = -1;
+
+	assert(absolute_path != NULL);
+	assert(absolute_path[0] == '/');
+
+	if ( ( inode_no = get_file_inode_no(absolute_path) ) == -1 )
+		return false;
+
+	read_group_descriptor(&group);
+	read_inode(&group, &inode, inode_no);
+
+	if (S_ISDIR(inode.i_mode))
+		return true;
+	else
+		return false;
 }
 
 bool output_file_data(const char * absolute_path) // cat
 {
+	int i, j;
+	int inode_no = -1;
+
+	struct ext2_group_desc group;
+	struct ext2_inode inode;
+	void * block = NULL;
+
 	assert(absolute_path != NULL);
 	assert(absolute_path[0] == '/');
+
+	inode_no = get_file_inode_no(absolute_path);
+
+	if ( inode_no == -1 )
+	{
+		fprintf(stderr, "cat: %s: No such file or directory\n", absolute_path);
+		return false;
+	}
+
+	read_group_descriptor(&group);
+	read_inode(&group, &inode, inode_no);
+	if (S_ISDIR(inode.i_mode))
+	{
+		fprintf(stderr, "cat: %s: Is a directory\n", absolute_path);
+		return false;
+	}
+	else if ( S_ISREG(inode.i_mode) )
+	{
+		if ((block = malloc(block_size)) == NULL)
+		{
+			fprintf(stderr, "Insufficient memory.\n");
+			exit(EXIT_FAILURE);
+		}
+
+		for ( i = 0; i < inode.i_blocks; ++ i )
+		{
+			lseek(fd_ext2, BLOCK_OFFSET(inode.i_block[i]), SEEK_SET);
+			read(fd_ext2, block, block_size);                // read block from disk
+			if ( i < EXT2_NDIR_BLOCKS )
+			{
+				for ( j = 0; j < block_size; ++ j )
+					putchar(((char *)block)[j]);
+			}
+			else if ( i == EXT2_IND_BLOCK )
+			{
+				// very complicated here, unfinished
+				/*
+				inode_no = inode.i_block[i];
+				read_group_descriptor(&group);
+				read_inode(&group, &inode_single_indirect_block, inode_no);
+				for ( j = 0; j < 4 && i + j < block_size; ++ j )
+				{
+					lseek(fd_ext2, BLOCK_OFFSET(inode_single_indirect_block.i_block[j]), SEEK_SET);
+					read(fd_ext2, block, block_size);                // read block from disk
+					for ( k = 0; k < block_size; ++ k )
+						putchar(((char *)block)[k]);
+				}
+				*/
+			}
+			else if ( i == EXT2_DIND_BLOCK )
+			{
+			}
+			else if ( i == EXT2_TIND_BLOCK )
+			{
+			}
+		}
+	}
+	else
+	{
+		fprintf(stderr, "cat: %s: Not supported\n", absolute_path);
+		return false;
+	}
+
 	return true;
 }
 
 
 bool remove_file(const char * absolute_path)  // rm
 {
+	struct ext2_group_desc group;
+	struct ext2_inode inode;
+	ssize_t bytesread = 0;
+
+	void * block = NULL;
+	int inode_no = root_inode_no;
+	link_list path_list = NULL;
+	link_list p = NULL;
+
 	assert(absolute_path != NULL);
 	assert(absolute_path[0] == '/');
+
+	generate_path_linklist(&path_list, absolute_path);
+	for ( p = path_list; p->next != NULL; p = p->next )
+	{
+		read_group_descriptor(&group);
+		read_inode(&group, &inode, inode_no);
+
+		struct ext2_dir_entry_2 * last_entry = NULL;
+		struct ext2_dir_entry_2 * this_entry = NULL;
+		unsigned int size = 0;
+
+		if ((block = malloc(block_size)) == NULL)
+		{
+			fprintf(stderr, "No sufficient memory\n");
+			exit(EXIT_FAILURE);
+		}
+
+		lseek(fd_ext2, BLOCK_OFFSET(inode.i_block[0]), SEEK_SET);
+		bytesread = read(fd_ext2, block, block_size);                // read block from disk
+
+		this_entry = (struct ext2_dir_entry_2 *) block;  // first entry in the directory
+		// Notice that the list may be terminated with a NULL entry (entry->inode == NULL)
+
+		inode_no = -1;
+		while((size < inode.i_size) && this_entry->inode)
+		{
+			char file_name[EXT2_NAME_LEN+1];
+			memcpy(file_name, this_entry->name, this_entry->name_len);
+			file_name[this_entry->name_len] = '\0';
+			if ( !strcmp(file_name, p->next->directory_name) )
+			{
+				inode_no = this_entry->inode;
+				if ( p->next->next == NULL )
+				{
+					last_entry->rec_len += this_entry->rec_len;
+					lseek(fd_ext2, BLOCK_OFFSET(inode.i_block[0]), SEEK_SET);
+					write(fd_ext2, block, bytesread);
+				}
+				break;
+			}
+			last_entry = this_entry;
+			this_entry = (struct ext2_dir_entry_2 *)((void *)this_entry + this_entry->rec_len);
+			size += this_entry->rec_len;
+		}
+
+		free(block);
+		block = this_entry = last_entry = NULL;
+
+		if( inode_no == -1 )
+			break;
+	}
+	destroy_path_linklist(&path_list);
+
+
+	if ( inode_no == -1 )
+		return false;
+
 	return true;
 }

@@ -1,3 +1,10 @@
+/*
+ *  目录链表的数据结构
+ *
+ *           叶剑飞
+ *
+ */
+
 #ifndef _ALGORITHM_DATA_STRUCTURE
 #define _ALGORITHM_DATA_STRUCTURE
 
