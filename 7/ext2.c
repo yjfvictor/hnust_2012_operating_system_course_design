@@ -94,48 +94,47 @@ int get_file_inode_no(const char * absolute_path)
 	{
 		read_group_descriptor(&group);
 		read_inode(&group, &inode, inode_no);
-		if (S_ISDIR(inode.i_mode))
+
+		struct ext2_dir_entry_2 * entry = NULL;
+		unsigned int size = 0;
+
+		if ((block = malloc(block_size)) == NULL)
 		{
-			struct ext2_dir_entry_2 * entry = NULL;
-			unsigned int size = 0;
-
-			if ((block = malloc(block_size)) == NULL)
-			{
-				fprintf(stderr, "No sufficient memory\n");
-				exit(EXIT_FAILURE);
-			}
-
-			lseek(fd_ext2, BLOCK_OFFSET(inode.i_block[0]), SEEK_SET);
-			read(fd_ext2, block, block_size);                // read block from disk
-
-			entry = (struct ext2_dir_entry_2 *) block;  // first entry in the directory
-			// Notice that the list may be terminated with a NULL entry (entry->inode == NULL)
-			if ( p->next == NULL )
-			{
-				free(block);
-				block = NULL;
-				break;
-			}
-			else
-			{
-				inode_no = -1;
-				while((size < inode.i_size) && entry->inode)
-				{
-					char file_name[EXT2_NAME_LEN+1];
-					memcpy(file_name, entry->name, entry->name_len);
-					file_name[entry->name_len] = '\0';
-					if ( !strcmp(file_name, p->next->directory_name) )
-					{
-						inode_no = entry->inode;
-						break;
-					}
-					entry = (struct ext2_dir_entry_2 *)((void *)entry + entry->rec_len);
-					size += entry->rec_len;
-				}
-				free(block);
-				block = entry = NULL;
-			}
+			fprintf(stderr, "No sufficient memory\n");
+			exit(EXIT_FAILURE);
 		}
+
+		lseek(fd_ext2, BLOCK_OFFSET(inode.i_block[0]), SEEK_SET);
+		read(fd_ext2, block, block_size);                // read block from disk
+
+		entry = (struct ext2_dir_entry_2 *) block;  // first entry in the directory
+		// Notice that the list may be terminated with a NULL entry (entry->inode == NULL)
+		if ( p->next == NULL )
+		{
+			free(block);
+			block = NULL;
+			break;
+		}
+		else
+		{
+			inode_no = -1;
+			while((size < inode.i_size) && entry->inode)
+			{
+				char file_name[EXT2_NAME_LEN+1];
+				memcpy(file_name, entry->name, entry->name_len);
+				file_name[entry->name_len] = '\0';
+				if ( !strcmp(file_name, p->next->directory_name) )
+				{
+					inode_no = entry->inode;
+					break;
+				}
+				entry = (struct ext2_dir_entry_2 *)((void *)entry + entry->rec_len);
+				size += entry->rec_len;
+			}
+			free(block);
+			block = entry = NULL;
+		}
+
 		if( inode_no == -1 )
 			break;
 	}
@@ -145,9 +144,6 @@ int get_file_inode_no(const char * absolute_path)
 
 void output_entry(const struct ext2_dir_entry_2 * entry, bool long_list)
 {
-#ifdef _DEBUG
-	//printf("%10u\t", entry->inode);
-#endif
 	char file_name[EXT2_NAME_LEN+1];
 	memcpy(file_name, entry->name, entry->name_len);
 	file_name[entry->name_len] = '\0';
@@ -210,6 +206,8 @@ void output_files( const char * absolute_path, bool all, bool almost_all, bool l
 		free(block);
 		block = entry = NULL;
 	}
+	else
+		fprintf(stderr, "Current directory does not exist.\n");
 }
 
 bool exsit_path(const char * absolute_path)
