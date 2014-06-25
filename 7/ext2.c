@@ -76,20 +76,6 @@ void read_inode(const struct ext2_group_desc * pgroup, struct ext2_inode * pinod
 	read(fd_ext2, pinode, sizeof(struct ext2_inode));
 }
 
-bool exsit_path(const char * absolute_path)
-{
-	assert(absolute_path != NULL);
-	assert(absolute_path[0] == '/');
-	return true;
-}
-
-bool output_file_data(const char * absolute_path) // cat
-{
-	assert(absolute_path != NULL);
-	assert(absolute_path[0] == '/');
-	return true;
-}
-
 int get_file_inode_no(const char * absolute_path)
 {
 	struct ext2_group_desc group;
@@ -223,6 +209,21 @@ void output_files( const char * absolute_path, bool all, bool almost_all, bool l
 		block = entry = NULL;
 	}
 }
+
+bool exsit_path(const char * absolute_path)
+{
+	assert(absolute_path != NULL);
+	assert(absolute_path[0] == '/');
+	return true;
+}
+
+bool output_file_data(const char * absolute_path) // cat
+{
+	assert(absolute_path != NULL);
+	assert(absolute_path[0] == '/');
+	return true;
+}
+
 
 bool remove_file(const char * absolute_path)  // rm
 {
