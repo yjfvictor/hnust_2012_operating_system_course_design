@@ -181,16 +181,16 @@ void print_last_error(void)
 	fprintf(stderr, "%s\n", lastError);
 }
 
-void get_path_without_dot_or_dotdot(char * absolute_path)
+void generate_path_linklist(link_list * ppath_list, const char * absolute_path)
 {
-	char absolute_path_backup[MAX_PATH];
-	char current_directory_name[MAX_PATH];
+	link_list p = NULL;
 	char * saveptr = NULL;
 	char * pstr = NULL;
-	link_list path_list = NULL;
-	link_list p = NULL;
-	link_list q = NULL;
 
+	char absolute_path_backup[MAX_PATH];
+	char current_directory_name[MAX_PATH];
+
+	assert(ppath_list != NULL);
 	assert(absolute_path != NULL);
 	assert(absolute_path[0] == '/');
 
@@ -199,18 +199,18 @@ void get_path_without_dot_or_dotdot(char * absolute_path)
 	absolute_path_backup[MAX_PATH - 1] = '\0';
 
 	// generate the head node of the path list
-	path_list = (link_list)malloc(sizeof(link_list_node));
-	if ( path_list == NULL )
+	*ppath_list = (link_list)malloc(sizeof(link_list_node));
+	if ( *ppath_list == NULL )
 	{
 		fprintf(stderr, "No sufficient memory\n");
 		exit(EXIT_FAILURE);
 	}
-	path_list->next = NULL;
-	path_list->prev = NULL;
-	strncpy(path_list->directory_name, "/", 2);
+	(*ppath_list)->next = NULL;
+	(*ppath_list)->prev = NULL;
+	strncpy((*ppath_list)->directory_name, "/", 2);
 
 	// generate the path list
-	p = path_list;
+	p = *ppath_list;
 	for( pstr = absolute_path_backup; ; pstr = NULL )
 	{
 		pstr = strtok_r( pstr, "/", &saveptr );
@@ -245,6 +245,34 @@ void get_path_without_dot_or_dotdot(char * absolute_path)
 		strncpy(p->directory_name, current_directory_name, MAX_PATH);
 		p->directory_name[MAX_PATH - 1] = '\0';
 	}
+}
+
+void destroy_path_linklist(link_list * ppath_list)
+{
+	link_list p = NULL;
+	link_list q = NULL;
+
+	assert(ppath_list != NULL);
+
+	p = *ppath_list;
+	while ( p != NULL )
+	{
+		q = p;
+		p = p->next;
+		free(q);
+	}
+	*ppath_list = p = q = NULL;
+}
+
+void get_path_without_dot_or_dotdot(char * absolute_path)
+{
+	link_list path_list = NULL;
+	link_list p = NULL;
+
+	assert(absolute_path != NULL);
+	assert(absolute_path[0] == '/');
+
+	generate_path_linklist(&path_list, absolute_path);
 
 	// generate the path
 	strncpy(absolute_path, "/", 2);
@@ -259,19 +287,12 @@ void get_path_without_dot_or_dotdot(char * absolute_path)
 	if ( strlen(absolute_path) == 0 )
 		strncpy(absolute_path, "/", 2);
 
-	// clear the link list
-	p = path_list;
-	while ( p != NULL )
-	{
-		q = p;
-		p = p->next;
-		free(q);
-	}
-	path_list = p = q = NULL;
+	destroy_path_linklist(&path_list);
 }
 
 void get_absolute_path(char * absolute_path, const char * path)
 {
+	assert(absolute_path != NULL);
 	assert(path != NULL);
 	if ( path[0] != '/' )
 	{
