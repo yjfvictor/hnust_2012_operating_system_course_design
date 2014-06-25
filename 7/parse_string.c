@@ -281,6 +281,8 @@ void get_absolute_path(char * absolute_path, const char * path)
 	else
 		absolute_path[0] = '\0';
 
+	if ( absolute_path[strlen(absolute_path)-1] != '/' )
+		strncat(absolute_path, "/", MAX_PATH - strlen(absolute_path));
 	strncat(absolute_path, path, MAX_PATH - strlen(absolute_path));
 	absolute_path[MAX_PATH - 1] = '\0';
 	get_path_without_dot_or_dotdot(absolute_path);

@@ -29,7 +29,7 @@ bool cd(const char * path)
 	if ( exsit_path(absolute_path) )
 	{
 		strncpy(current_path, absolute_path, sizeof(current_path));
-		current_path[sizeof(current_path) - 1] = 0;
+		current_path[sizeof(current_path) - 1] = '\0';
 		return true;
 	}
 	else

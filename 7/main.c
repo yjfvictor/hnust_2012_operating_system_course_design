@@ -105,6 +105,8 @@ int main(int argc, char * argv[])
 	strcpy(current_path, "/");
 
 	read_super_block_data();
+	read_group_descriptor();
+	read_inode();
 
 	output_shell_prompt();
 
