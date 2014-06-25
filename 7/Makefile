@@ -14,7 +14,8 @@ TARGET = 7
 OBJS = main.o ext2.o parse_string.o deal_command.o
 CC = gcc
 CXX = g++
-CFLAGS = -ggdb -Wall
+#DEBUG_OPTION=-ggdb -D_DEBUG
+CFLAGS = -Wall $(DEBUG_OPTION)
 CXXFLAGS = -ggdb -Wall
 LDFLAGS = -ggdb -Wall
 
