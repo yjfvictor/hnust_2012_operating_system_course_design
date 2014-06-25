@@ -137,10 +137,7 @@ int get_file_inode_no(const char * absolute_path)
 			}
 		}
 		if( inode_no == -1 )
-		{
-			fprintf(stderr, "Current directory does not exist.\n");
 			break;
-		}
 	}
 	destroy_path_linklist(&path_list);
 	return inode_no;
@@ -169,6 +166,11 @@ void output_files( const char * absolute_path, bool all, bool almost_all, bool l
 	struct ext2_inode inode;
 	void * block = NULL;
 	int inode_no = get_file_inode_no(absolute_path);
+	if ( inode_no == -1 )
+	{
+		fprintf(stderr, "Current directory does not exist.\n");
+		return;
+	}
 	read_group_descriptor(&group);
 	read_inode(&group, &inode, inode_no);
 	if (S_ISDIR(inode.i_mode))
