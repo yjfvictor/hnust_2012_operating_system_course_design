@@ -1,10 +1,11 @@
 # Linux进程间通信 #
 
-进程间通信（InterProcess Communication），简称IPC。在类Unix操作系统中，进程间通信的方式有四种，分别是：
+进程间通信（InterProcess Communication），简称IPC。在类Unix操作系统中，进程间通信的方式有五种，分别是：
 
 - 管道（pipe）
 - FIFO
 - XSI IPC
+- POSIX IPC
 - 套接字（socket）
 
 其中，XSI IPC又分为三种，分别是：
