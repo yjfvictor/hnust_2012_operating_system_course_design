@@ -1,11 +1,10 @@
-﻿/*
- *  实验二 清单2-1 创建子进程
- *
- *
- *               叶剑飞
- *              2014年6月13日
+﻿/** 
+ * @file    2-1.c 
+ * @brief   实验二 清单2-1 
+ * @details 创建子进程
+ * @author  叶剑飞
+ * @date    2014年6月13日
  */
-
 
 #include <Windows.h>
 #include <stdio.h>
@@ -16,8 +15,10 @@
 // 最多允许创建的子进程个数。这里设置为5，最多只能创建5个。
 const int c_nCloneMax = 5;
 
-
-// 创建传递过来的进程的克隆过程并赋予其ID值
+/**
+ * @brief 克隆一个进程
+ * @param nCloneID 克隆ID号
+ */
 void StartClone(int nCloneID)
 {
 	TCHAR szFilename[MAX_PATH];
@@ -59,6 +60,13 @@ void StartClone(int nCloneID)
 		_ftprintf(stderr, TEXT("创建Clone ID为%d的进程失败\n"), nCloneID);
 }
 
+/**
+ * @brief 主函数
+ * @param argc 命令行参数的个数
+ * @param argv 命令行参数向量
+ * @return 成功返回EXIT_SUCCESS，失败返回EXIT_FAILURE 
+ * @note 如果 argc > 1，那么argv[1]中储存的是克隆ID号
+ */
 int _tmain(int argc, TCHAR * argv[])
 {
 	// 确定派生出几个进程，及派生进程在进程列表中的位置

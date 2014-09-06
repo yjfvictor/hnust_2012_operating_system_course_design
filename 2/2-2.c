@@ -1,9 +1,9 @@
-﻿/*
- *  实验二 清单2-2 父子进程的简单通信及终止的示例程序
- *
- *
- *                            叶剑飞
- *                            2014年6月13日
+﻿/**
+ * @file    2-2.c 
+ * @brief   实验二 清单2-2 
+ * @details 父子进程的简单通信及终止的示例程序
+ * @author  叶剑飞
+ * @date    2014年6月13日
  */
 
 #include <stdio.h>
@@ -16,7 +16,10 @@
 // 互斥体的名字
 static LPCTSTR g_szMutexName = TEXT("w2kdg.ProcTerm.mutex.Suicide");
 
-// 创建子进程的函数
+/**
+ * @brief 创建子进程
+ * @return 创建成功返回TRUE，创建失败返回FALSE
+ */
 BOOL StartClone(void)
 {
 	TCHAR szFilename[MAX_PATH];
@@ -65,6 +68,9 @@ BOOL StartClone(void)
 	return bCreateOK;
 }
 
+/**
+ * @brief 子进程调用这个函数
+ */
 void Child(void)
 {
 	DWORD dwLastError = 0;
@@ -99,6 +105,9 @@ void Child(void)
 	exit(EXIT_SUCCESS);
 }
 
+/**
+ * @brief 父进程调用这个函数
+ */
 void Parent(void)
 {
 	DWORD dwLastError = 0;
@@ -142,6 +151,13 @@ void Parent(void)
 	CloseHandle(hMutexSuicide);
 }
 
+/**
+ * @brief 主函数
+ * @param argc 命令行参数的个数
+ * @param argv 命令行参数向量
+ * @return 成功返回EXIT_SUCCESS 
+ * @note   如果命令行参数有两个，并且argv[1]为TEXT("child")，那么该进程为子进程
+ */
 int _tmain(int argc, TCHAR * argv[])
 {
 	setlocale(LC_ALL, "");
