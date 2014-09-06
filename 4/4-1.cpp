@@ -1,12 +1,12 @@
-﻿/*
- *  实验四  Windows存储管理
+﻿/**
+ * @file 4-1.cpp 
+ * @brief 实验四 清单4-1
  *
- *  清单4-1  了解和检测进程的虚拟内存空间
+ * @details Windows存储管理
+ *          了解和检测进程的虚拟内存空间
  *
- *
- *
- *                     叶剑飞
- *                     2014年6月16日
+ * @author  叶剑飞
+ * @date    2014年6月16日
  */
 
 #include <Windows.h>
@@ -18,18 +18,36 @@
 
 #pragma comment(lib, "Shlwapi.lib")
 
-// 以可读方式对用户显示保护的辅助方法。
-// 保护标记表示允许应用程序对内存进行访问的类型
-// 以及操作系统强制访问的类型
+/**
+ * @brief   测试掩码
+ * 
+ * @details 以可读方式对用户显示保护的辅助方法。
+ *          保护标记表示允许应用程序对内存进行访问的类型
+ *  		以及操作系统强制访问的类型
+ *  
+ * @param dwTarget  目的值
+ * @param dwMask    掩码 
+ * 
+ * @return 测试成功返回true，否则返回false
+ */
 inline bool TestSet(DWORD dwTarget, DWORD dwMask)
 {
 	return ((dwTarget & dwMask) == dwMask);
 }
 
+/** 
+ * @brief 输出存在的掩码 
+ * @param dwTarget  目标值
+ * @param type      类型
+ */
 # define SHOWMASK(dwTarget, type) \
 if (TestSet(dwTarget, PAGE_##type)) \
 	{ _tprintf(TEXT(", %s"), TEXT(#type)); }
 
+/**
+ * @brief 显示保护
+ * @param dwTarget 目标值
+ */
 void ShowProtection(DWORD dwTarget)
 {
 	SHOWMASK(dwTarget, READONLY);
@@ -44,7 +62,13 @@ void ShowProtection(DWORD dwTarget)
 	SHOWMASK(dwTarget, NOACCESS);
 }
 
-// 遍历整个虚拟内存并对用户显示其属性的工作程序的方法
+/**
+ * @brief   遍历虚拟内存
+ * 
+ * @details 遍历指定进程的整个虚拟内存并对用户显示其属性的工作程序的方法 
+ *  
+ * @param hProcess 待遍历的进程的进程句柄
+ */
 void WalkVM(HANDLE hProcess)
 {
 	// 首先，获得系统信息
@@ -129,6 +153,9 @@ void WalkVM(HANDLE hProcess)
 	}
 }
 
+/**
+ * @brief 显示虚拟内存的概况
+ */
 void ShowVirtualMemory()
 {
 	// 首先，让我们获得系统信息
@@ -151,6 +178,10 @@ void ShowVirtualMemory()
 	_tprintf(TEXT("Total available virtual memory: %s\n"), szMemSize);
 }
 
+/**
+ * @brief 主函数
+ * @return 成功返回EXIT_SUCCESS，失败返回EXIT_FAILURE
+ */
 int _tmain()
 {
 	setlocale(LC_ALL, "");
