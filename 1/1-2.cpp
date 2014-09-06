@@ -1,11 +1,10 @@
-﻿/*
- *  实验一  清单1-2 内核态运行时间与用户态运行时间比的计算
- *
- *
- *                            叶剑飞
- *                            2014年6月13日
+﻿/** 
+ * @file    1-2.cpp 
+ * @brief   实验一  清单1-2 
+ * @details 内核态运行时间与用户态运行时间比的计算
+ * @author  叶剑飞
+ * @date    2014年6月13日
  */
-
 
 #include <cstdlib>
 #include <iostream>
@@ -14,6 +13,12 @@
 #include <tchar.h>
 #include <clocale>
 
+/**
+ * @brief 获取内核态时间的百分比
+ * @param ftKernel 内核态时间
+ * @param ftUser   用户态时间
+ * @return 内核态时间的百分比
+ */
 DWORD GetKernelModePercentage(const FILETIME & ftKernel, const FILETIME & ftUser)
 {
 	// 将FILETIME结构转化为64位整数
@@ -26,6 +31,12 @@ DWORD GetKernelModePercentage(const FILETIME & ftKernel, const FILETIME & ftUser
 	return dwPct;
 }
 
+/**
+ * @brief 主函数 
+ * @param argc 命令行参数的个数，必须为2
+ * @param argv 命令行参数向量，第2个参数为需要查询的进程名
+ * @return 成功返回EXIT_SUCCESS，失败返回EXIT_FAILURE
+ */
 int _tmain(int argc, TCHAR * argv[])
 {
 	DWORD dwLastError = 0;
