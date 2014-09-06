@@ -1,13 +1,9 @@
-/*
- *  主函数 
- *
- *  输入命令行参数，为一个装有ext2文件系统的文件  
- *  
- *
- *
- *                       叶剑飞
- *                       2014年6月18日
- *
+/**
+ * @file    main.c
+ * @brief   主程序
+ * @details 输入命令行参数，为一个装有ext2文件系统的文件  
+ * @author  叶剑飞
+ * @date    2014-06-18
  */
 
 #include "common.h"
@@ -18,24 +14,38 @@
 #include "parse_string.h"
 #include "ext2.h"
 
+/**
+ * @brief 输出shell的提示符
+ */
 void output_shell_prompt(void)
 {
 	printf("[%s@%s %s] $ ", username, hostname, current_path);
 	fflush(stdout);
 }
 
+/**
+ * @brief 退出时运行的函数
+ */
 void exit_func(void)
 {
 	close(fd_ext2);
 	fd_ext2 = -1;
 }
 
+/**
+ * @brief 键盘中断
+ * @param number 中断号，这里没有用到
+ */
 void keyboard_interrupt(int number)
 {
 	puts("");
 	output_shell_prompt();
 }
 
+/**
+ * @brief 释放argv参数申请的空间
+ * @param pargv 需要释放的参数的地址
+ */
 void destroy_argv(char *** pargv)
 {
 	char ** p;
@@ -48,6 +58,10 @@ void destroy_argv(char *** pargv)
 	*pargv = NULL;
 }
 
+/**
+ * @brief  判断是否登录成功的函数
+ * @return 登录成功返回true，登录失败返回false
+ */
 bool login(void)
 {
 #ifdef _DEBUG
@@ -72,6 +86,12 @@ bool login(void)
 #endif
 }
 
+/**
+ * @brief  主函数
+ * @param  argc 命令行参数的个数
+ * @param  argv 命令行参数的字符串数组，argv[1]为存有ext2文件系统的文件的文件名
+ * @return 成功返回EXIT_SUCCESS，失败返回EXIT_FAILURE
+ */
 int main(int argc, char * argv[])
 {
 	int cmd_argc;

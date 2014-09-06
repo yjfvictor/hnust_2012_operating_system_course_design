@@ -1,10 +1,8 @@
-/*
- *   ext2文件系统的读写、遍历等操作
- *
- *
- *             叶剑飞
- *             2014年6月
- * 
+/**
+ * @file   ext2.c
+ * @brief  ext2文件系统的读写、遍历等操作
+ * @author 叶剑飞
+ * @date   2014年6月
  */
 
 #include "common.h"
@@ -24,6 +22,9 @@ static unsigned int block_size = 0;
 
 const int root_inode_no = 2;
 
+/**
+ * @brief 读取超级块的数据
+ */
 void read_super_block_data(void)
 {
 	ssize_t bytes = -1;
@@ -63,6 +64,10 @@ void read_super_block_data(void)
 	block_size = 1024 << super.s_log_block_size;
 }
 
+/**
+ * @brief 读取组描述符的数据
+ * @param pgroup 组描述符
+ */
 void read_group_descriptor(struct ext2_group_desc * pgroup)
 {
 	ssize_t bytes = -1;
@@ -81,12 +86,23 @@ void read_group_descriptor(struct ext2_group_desc * pgroup)
 	}
 }
 
+/**
+ * @brief 读取inode的数据
+ * @param pgroup    组描述符
+ * @param pinode    inode
+ * @param inode_no  inode号
+ */
 void read_inode(const struct ext2_group_desc * pgroup, struct ext2_inode * pinode, int inode_no )
 {
 	lseek(fd_ext2, BLOCK_OFFSET(pgroup->bg_inode_table)+(inode_no-1)*sizeof(struct ext2_inode), SEEK_SET);
 	read(fd_ext2, pinode, sizeof(struct ext2_inode));
 }
 
+/**
+ * @brief 获取文件的inode号
+ * @param absolute_path  文件的绝对路径
+ * @return int 返回文件的inode号，失败返回-1
+ */
 int get_file_inode_no(const char * absolute_path)
 {
 	struct ext2_group_desc group;
@@ -153,6 +169,12 @@ int get_file_inode_no(const char * absolute_path)
 	return inode_no;
 }
 
+/**
+ * @brief 以文本形式输出entry
+ * @param entry      指定文件的entry
+ * @param long_list  是否以长列表形式输出
+ * @param inode_no   inode号 
+ */
 void output_entry(const struct ext2_dir_entry_2 * entry, bool long_list, int inode_no)
 {
 	char file_name[EXT2_NAME_LEN+1];
@@ -225,6 +247,13 @@ void output_entry(const struct ext2_dir_entry_2 * entry, bool long_list, int ino
 		printf("%s\t", file_name);
 }
 
+/**
+ * @brief 输出文件 
+ * @param absolute_path 文件的绝对路径
+ * @param all 是否输出全部文件，包括隐藏文件，以及.和..
+ * @param almost_all 是否“几乎全部”输出，包括隐藏文件，不包括.和..
+ * @param long_list  是否按长列表方式输出
+ */
 void output_files( const char * absolute_path, bool all, bool almost_all, bool long_list )  // ls
 {
 	struct ext2_group_desc group;
@@ -281,6 +310,11 @@ void output_files( const char * absolute_path, bool all, bool almost_all, bool l
 		fprintf(stderr, "Current directory does not exist.\n");
 }
 
+/**
+ * @brief 判断是否存在该路径
+ * @param absolute_path 绝对路径
+ * @return 存在返回true，不存在返回false
+ */
 bool exsit_path(const char * absolute_path)
 {
 	assert(absolute_path != NULL);
@@ -292,6 +326,11 @@ bool exsit_path(const char * absolute_path)
 	return true;
 }
 
+/**
+ * @brief 判断是否存在该目录
+ * @param absolute_path 绝对路径
+ * @return 存在返回true，不存在返回false
+ */
 bool exsit_dir_path(const char * absolute_path)
 {
 	struct ext2_group_desc group;
@@ -313,6 +352,12 @@ bool exsit_dir_path(const char * absolute_path)
 		return false;
 }
 
+/**
+ * @brief 输出文件中的内容
+ * @details cat函数调用这个函数
+ * @param absolute_path 绝对路径
+ * @return 成功返回true，失败返回false
+ */
 bool output_file_data(const char * absolute_path) // cat
 {
 	int i, j;
@@ -390,7 +435,11 @@ bool output_file_data(const char * absolute_path) // cat
 	return true;
 }
 
-
+/**
+ * @brief 删除文件
+ * @param absolute_path 文件的绝对路径
+ * @return 删除成功返回true，删除失败返回false
+ */
 bool remove_file(const char * absolute_path)  // rm
 {
 	struct ext2_group_desc group;
