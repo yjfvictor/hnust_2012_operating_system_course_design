@@ -1,10 +1,9 @@
-/*
- * 实验六 Linux进程间通信
- *
- *   任务二  通信方式： XSI IPC 共享内存
- *
- *                叶剑飞
- *                2014年6月14日
+/** 
+ * @file    6-2.c 
+ * @brief   实验六 Linux进程间通信 任务二 
+ * @details 通信方式： XSI IPC 共享内存
+ * @author  叶剑飞
+ * @date    2014年6月14日
  */
 
 #include <stdio.h>
@@ -21,6 +20,9 @@
 // 按照指导书上的要求，建立key为75的消息队列
 const key_t key = 75;
 
+/**
+ * @brief 服务器端
+ */
 void server(void)
 {
 	// 进程间共享内存的映射区
@@ -70,6 +72,9 @@ void server(void)
 	shmaddr = NULL;
 }
 
+/**
+ * @brief 客户端
+ */
 void client(void)
 {
 	volatile char * shmaddr;
@@ -107,6 +112,10 @@ void client(void)
 	shmaddr = NULL;
 }
 
+/**
+ * @brief 主函数 
+ * @return 成功返回EXIT_SUCCESS，失败返回EXIT_FAILURE
+ */
 int main(void)
 {
 	pid_t fork_result, server_pid, client_pid;

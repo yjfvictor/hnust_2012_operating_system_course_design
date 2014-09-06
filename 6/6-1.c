@@ -1,10 +1,9 @@
-/*
- * 实验六 Linux进程间通信
- *
- *   任务一  通信方式： XSI IPC 消息队列
- *
- *                叶剑飞
- *                2014年6月14日
+/** 
+ * @file    6-1.c 
+ * @brief   实验六 Linux进程间通信 任务一 
+ * @details 通信方式： XSI IPC 消息队列
+ * @author  叶剑飞
+ * @date    2014年6月14日
  */
 
 #include <stdio.h>
@@ -18,6 +17,7 @@
 // 消息的最长的长度
 #define MAX_LENGTH 5
 
+// 传递消息的结构体
 typedef struct
 {
 	long mtype;   // 消息类型，必须为正数
@@ -27,6 +27,9 @@ typedef struct
 // 按照指导书上的要求，建立key为75的消息队列
 const key_t key = 75;
 
+/**
+ * @brief 服务器端
+ */
 void server(void)
 {
 	msgbuf msg;
@@ -62,6 +65,9 @@ void server(void)
 	} while ( msg.mtext[0] != 1 );
 }
 
+/**
+ * @brief 客户端
+ */
 void client(void)
 {
 	int i; // 循环计数
@@ -92,6 +98,10 @@ void client(void)
 	}
 }
 
+/**
+ * @brief 主函数
+ * @return 成功返回EXIT_SUCCESS，失败返回EXIT_FAILURE
+ */
 int main(void)
 {
 	pid_t fork_result, server_pid, client_pid;
