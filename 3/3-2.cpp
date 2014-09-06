@@ -1,13 +1,13 @@
-﻿/*
- *  实验三  Windows线程同步的经典算法
- *
- *     任务二  根据实验（1）中所熟悉的P、V原主对应的
+﻿/** 
+ * @file       3-2.cpp 
+ * @brief      实验三  任务二
+ * @details    根据实验（1）中所熟悉的P、V原主对应的
  *             实际Windows API函数，并参考教材中读者、
  *             写者问题的算法原理，尝试利用Windows API函数
  *             实现第一类读者问题（读者优先）
  *
- *                    叶剑飞
- *                    2014年6月15日
+ * @author     叶剑飞
+ * @date       2014年6月15日
  */
 
 #include <stdio.h>
@@ -25,17 +25,28 @@ HANDLE hWriteSemaphore = NULL;
 
 int data = 0;
 
+/**
+ * @brief 读数据
+ */
 void readData()
 {
 	_tprintf(TEXT("读取到数据：%d\n"), data);
 }
 
+/**
+ * @brief 写数据
+ */
 void writeData()
 {
 	data = rand();
 	_tprintf(TEXT("写入数据：%d\n"), data);
 }
 
+/**
+ * @brief 读者线程
+ * @param lpThreadParameter 线程参数（此处未被使用）
+ * @return  正常退出，返回0
+ */
 DWORD WINAPI reader(LPVOID lpThreadParameter)
 {
 	srand((unsigned int)time(NULL));
@@ -54,6 +65,11 @@ DWORD WINAPI reader(LPVOID lpThreadParameter)
 	return 0;
 }
 
+/**
+ * @brief 写者线程
+ * @param lpThreadParameter 线程参数（此处未被使用）
+ * @return  正常退出，返回0
+ */
 DWORD WINAPI writer(LPVOID lpThreadParameter)
 {
 	srand((unsigned int)time(NULL));
@@ -63,12 +79,22 @@ DWORD WINAPI writer(LPVOID lpThreadParameter)
 	return 0;
 }
 
+/**
+ * @brief 请求停止所有线程的线程
+ * @param lpThreadParameter 线程参数（此处未被使用）
+ * @return 正常退出，返回0
+ */
 DWORD WINAPI stopAllThreads(LPVOID lpThreadParameter)
 {
 	_gettchar();
 	return 0;
 }
 
+/**
+ * @brief 读者写者线程的线程启动函数
+ * @param readerThread 读者线程的函数
+ * @param writerThread 写者线程的函数
+ */
 void parbegin(LPTHREAD_START_ROUTINE readerThread, LPTHREAD_START_ROUTINE writerThread)
 {
 	DWORD dwThreadID = 0;
@@ -105,6 +131,10 @@ void parbegin(LPTHREAD_START_ROUTINE readerThread, LPTHREAD_START_ROUTINE writer
 	hStopAllThreads = NULL;
 }
 
+/**
+ * @brief 主函数
+ * @return 成功返回EXIT_SUCCESS，失败返回EXIT_FAILURE
+ */
 int _tmain()
 {
 	setlocale(LC_ALL, "");

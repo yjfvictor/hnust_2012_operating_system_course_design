@@ -1,10 +1,9 @@
-﻿/*
- *
- *  实验三 清单3-1 生产者消费者问题
- *
- *
- *                叶剑飞
- *                2014年6月13日
+﻿/**
+ * @file    3-1.cpp
+ * @brief   实验三 清单3-1 
+ * @details 生产者消费者问题
+ * @author  叶剑飞
+ * @date    2014年6月13日
  */
 
 #include <stdio.h>
@@ -25,7 +24,9 @@ HANDLE hMutex;                                 // 用于线程间的互斥
 HANDLE hFullSemaphore;                         // 当缓冲区满时迫使生产者等待
 HANDLE hEmptySemaphore;                        // 当缓冲区空时迫使消费者等待
 
-// 生产一个产品
+/**
+ * @brief 生产一个产品
+ */
 void Produce()
 {
 	// 输出产品ID号，产品自增一
@@ -33,7 +34,9 @@ void Produce()
 	_tprintf(TEXT("Succeed\n"));
 }
 
-// 把新生产的产品放入缓冲区
+/**
+ * @brief 把新生产的产品放入缓冲区
+ */
 void Append()
 {
 	_ftprintf(stderr, TEXT("Appending a product ... "));
@@ -53,7 +56,9 @@ void Append()
 	}
 }
 
-// 从缓冲区中取出一个产品
+/**
+ * @brief 从缓冲区中取出一个产品
+ */
 void Take()
 {
 	_ftprintf(stderr, TEXT("Taking a product ..."));
@@ -74,14 +79,21 @@ void Take()
 	}
 }
 
-// 消耗一个产品
+/**
+ * @brief 消耗一个产品
+ */
 void Consume()
 {
 	_tprintf(TEXT("Consuming %d ... "), consumeID);
 	_tprintf(TEXT("Succeed\n"));
 }
 
-DWORD WINAPI Producer(LPVOID lpParameter)      // 生产者线程
+/**
+ * @brief 生产者线程
+ * @param lpParameter 线程参数，此处未被使用
+ * @return 若正常退出，则返回0
+ */
+DWORD WINAPI Producer(LPVOID lpParameter)
 {
 	while (p_ccontinue)
 	{
@@ -96,7 +108,12 @@ DWORD WINAPI Producer(LPVOID lpParameter)      // 生产者线程
 	return 0;
 }
 
-DWORD WINAPI Consumer(LPVOID lpParameter)      // 消费者线程
+/**
+ * @brief 消费者线程
+ * @param lpParameter 线程参数，此处未被使用
+ * @return 若正常退出，则返回0
+ */
+DWORD WINAPI Consumer(LPVOID lpParameter)
 {
 	while (p_ccontinue)
 	{
@@ -111,6 +128,10 @@ DWORD WINAPI Consumer(LPVOID lpParameter)      // 消费者线程
 	return 0;
 }
 
+/**
+ * @brief 主函数
+ * @return 成功返回EXIT_SUCCESS，失败返回EXIT_FAILURE
+ */
 int _tmain()
 {
 	::setlocale(LC_ALL, "");
