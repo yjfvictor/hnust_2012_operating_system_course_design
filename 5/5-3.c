@@ -1,14 +1,11 @@
-/*
- *  实验五  熟悉Unix/Linux操作系统
- *
- *     任务三 使用C语言编写一个词频统计
- *            程序，使之能给出各个单词
- *            在输入文件中出现的次数。
- *
- *
- *             叶剑飞
- *             2014年6月15日
- *
+/**
+ * @file    5-3.c
+ * @brief   实验五  熟悉Unix/Linux操作系统 任务三
+ * @details 使用C语言编写一个词频统计
+ *          程序，使之能给出各个单词
+ *          在输入文件中出现的次数。
+ * @author  叶剑飞
+ * @date    2014年6月15日
  */
 
 #include <stdio.h>
@@ -27,7 +24,12 @@ typedef struct LinkList
 	struct LinkList * next;
 } LinkList;
 
-// 在链表中找到指定单词，返回其节点指针。若不存在，则返回NULL指针。
+/**
+ * @brief              在链表中找到指定的单词，获取这个节点
+ * @param head         链表头
+ * @param current_word 需要查找的指定单词
+ * @return             返回找到指定单词的链表节点的地址。若不存在，则返回NULL。
+ */
 LinkList * locate( LinkList * head, const char * current_word )
 {
 	LinkList * p = NULL;
@@ -39,14 +41,24 @@ LinkList * locate( LinkList * head, const char * current_word )
 	return NULL;
 }
 
-// 在指定的链表节点的统计数自增一
+/** 
+ * @brief   自增函数 
+ * @details 在链表指定的节点处，统计数自增一
+ * @param pos 链表的指定节点的地址
+ */
 void increase( LinkList * pos )
 {
 	assert( pos != NULL );
 	++(pos->count);
 }
 
-// 把新单词加入链表中
+/**
+ * @brief              链表追加函数
+ * @details            把新单词加入链表中
+ * @param phead        链表头指针
+ * @param current_word 待加入的新单词
+ * @return             加入成功返回true，否则返回false
+ */
 bool append( LinkList ** phead, const char * current_word )
 {
 	LinkList * p = (LinkList *)malloc(sizeof(LinkList));
@@ -60,7 +72,10 @@ bool append( LinkList ** phead, const char * current_word )
 	return true;
 }
 
-// 输出统计结果
+/**
+ * @brief 输出统计结果
+ * @param head 链表头节点
+ */
 void outputStatistic(const LinkList * head)
 {
 	const LinkList * p = NULL;
@@ -68,7 +83,10 @@ void outputStatistic(const LinkList * head)
 		printf("%s %d\n", p->word, p->count);
 }
 
-// 释放链表的虚拟内存地址空间
+/**
+ * @brief 释放链表的虚拟内存地址空间
+ * @param phead 链表的表头指针的地址
+ */
 void destroyLinkList(LinkList ** phead)
 {
 	LinkList * p = *phead;
@@ -82,6 +100,10 @@ void destroyLinkList(LinkList ** phead)
 	}
 }
 
+/**
+ * @brief 主函数 
+ * @return 若成功，则返回EXIT_SUCCESS，否则返回EXIT_FAILURE
+ */
 int main(void)
 {
 	// 储存最近一次scanf读入的数据

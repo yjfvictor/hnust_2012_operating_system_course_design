@@ -1,12 +1,11 @@
-/*
- * 实验五 熟悉Unix/Linux操作系统
- *
- *    任务四 用C语言编写一个反向打印的
- *           程序，使之能够按与输入文件
- *           中的文本行相反的次序来打印
- *
- *                 叶剑飞
- *                 2014年6月15日
+/** 
+ * @file    5-4.c
+ * @brief   实验五 熟悉Unix/Linux操作系统 任务四
+ * @details 用C语言编写一个反向打印的
+ *          程序，使之能够按与输入文件
+ *          中的文本行相反的次序来打印
+ * @author  叶剑飞
+ * @date    2014年6月15日
  */
 
 #include <stdio.h>
@@ -22,6 +21,13 @@ typedef struct LinkList
 	struct LinkList * next;
 } LinkList;
 
+/**
+ * @brief 链表追加函数 
+ * @details 把新增的一行，插入到链表的头部 
+ * @param phead 链表头指针
+ * @param line  追加的某一行
+ * @return 成功返回true，失败返回false
+ */
 bool append(LinkList ** phead, const char * line)
 {
 	size_t len = strlen(line) + 1;
@@ -43,6 +49,10 @@ bool append(LinkList ** phead, const char * line)
 	return true;
 }
 
+/**
+ * @brief 输出全部行
+ * @param head 链表的表头
+ */
 void outputAllLines( const LinkList * head )
 {
 	const LinkList * p = NULL;
@@ -50,6 +60,10 @@ void outputAllLines( const LinkList * head )
 		puts(p->line);
 }
 
+/**
+ * @brief 销毁链表
+ * @param head 链表的表头指针的地址
+ */
 void destroyLinkList(LinkList ** head)
 {
 	LinkList * p = *head;
@@ -62,6 +76,10 @@ void destroyLinkList(LinkList ** head)
 	}
 }
 
+/**
+ * @brief 主函数
+ * @return 成功返回EXIT_SUCCESS，失败返回EXIT_FAILURE
+ */
 int main(void)
 {
 	LinkList * head = NULL;
