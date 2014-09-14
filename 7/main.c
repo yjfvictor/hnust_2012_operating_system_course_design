@@ -34,7 +34,7 @@ void exit_func(void)
 
 /**
  * @brief 键盘中断
- * @param number 中断号，这里没有用到
+ * @param[in] number 中断号，这里没有用到
  */
 void keyboard_interrupt(int number)
 {
@@ -44,7 +44,7 @@ void keyboard_interrupt(int number)
 
 /**
  * @brief 释放argv参数申请的空间
- * @param pargv 需要释放的参数的地址
+ * @param[in,out] pargv 需要释放的参数的地址
  */
 void destroy_argv(char *** pargv)
 {
@@ -88,8 +88,8 @@ bool login(void)
 
 /**
  * @brief  主函数
- * @param  argc 命令行参数的个数
- * @param  argv 命令行参数的字符串数组，argv[1]为存有ext2文件系统的文件的文件名
+ * @param[in]  argc 命令行参数的个数
+ * @param[in]  argv 命令行参数的字符串数组，argv[1]为存有ext2文件系统的文件的文件名
  * @return 成功返回EXIT_SUCCESS，失败返回EXIT_FAILURE
  */
 int main(int argc, char * argv[])

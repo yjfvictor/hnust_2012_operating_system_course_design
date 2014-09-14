@@ -66,7 +66,7 @@ void read_super_block_data(void)
 
 /**
  * @brief 读取组描述符的数据
- * @param pgroup 组描述符
+ * @param[out] pgroup 组描述符
  */
 void read_group_descriptor(struct ext2_group_desc * pgroup)
 {
@@ -88,9 +88,9 @@ void read_group_descriptor(struct ext2_group_desc * pgroup)
 
 /**
  * @brief 读取inode的数据
- * @param pgroup    组描述符
- * @param pinode    inode
- * @param inode_no  inode号
+ * @param[in]  pgroup    组描述符
+ * @param[out] pinode    inode
+ * @param[in]  inode_no  inode号
  */
 void read_inode(const struct ext2_group_desc * pgroup, struct ext2_inode * pinode, int inode_no )
 {
@@ -100,8 +100,8 @@ void read_inode(const struct ext2_group_desc * pgroup, struct ext2_inode * pinod
 
 /**
  * @brief 获取文件的inode号
- * @param absolute_path  文件的绝对路径
- * @return int 返回文件的inode号，失败返回-1
+ * @param[in] absolute_path  文件的绝对路径
+ * @return 返回文件的inode号，失败返回-1
  */
 int get_file_inode_no(const char * absolute_path)
 {
@@ -171,9 +171,9 @@ int get_file_inode_no(const char * absolute_path)
 
 /**
  * @brief 以文本形式输出entry
- * @param entry      指定文件的entry
- * @param long_list  是否以长列表形式输出
- * @param inode_no   inode号 
+ * @param[in] entry      指定文件的entry
+ * @param[in] long_list  是否以长列表形式输出
+ * @param[in] inode_no   inode号 
  */
 void output_entry(const struct ext2_dir_entry_2 * entry, bool long_list, int inode_no)
 {
@@ -249,10 +249,10 @@ void output_entry(const struct ext2_dir_entry_2 * entry, bool long_list, int ino
 
 /**
  * @brief 输出文件 
- * @param absolute_path 文件的绝对路径
- * @param all 是否输出全部文件，包括隐藏文件，以及.和..
- * @param almost_all 是否“几乎全部”输出，包括隐藏文件，不包括.和..
- * @param long_list  是否按长列表方式输出
+ * @param[in] absolute_path 文件的绝对路径
+ * @param[in] all           是否输出全部文件，包括隐藏文件，以及.和..
+ * @param[in] almost_all    是否“几乎全部”输出，包括隐藏文件，不包括.和..
+ * @param[in] long_list     是否按长列表方式输出
  */
 void output_files( const char * absolute_path, bool all, bool almost_all, bool long_list )  // ls
 {
@@ -312,7 +312,7 @@ void output_files( const char * absolute_path, bool all, bool almost_all, bool l
 
 /**
  * @brief 判断是否存在该路径
- * @param absolute_path 绝对路径
+ * @param[in] absolute_path 绝对路径
  * @return 存在返回true，不存在返回false
  */
 bool exsit_path(const char * absolute_path)
@@ -328,7 +328,7 @@ bool exsit_path(const char * absolute_path)
 
 /**
  * @brief 判断是否存在该目录
- * @param absolute_path 绝对路径
+ * @param[in] absolute_path 绝对路径
  * @return 存在返回true，不存在返回false
  */
 bool exsit_dir_path(const char * absolute_path)
@@ -355,7 +355,7 @@ bool exsit_dir_path(const char * absolute_path)
 /**
  * @brief 输出文件中的内容
  * @details cat函数调用这个函数
- * @param absolute_path 绝对路径
+ * @param[in] absolute_path 绝对路径
  * @return 成功返回true，失败返回false
  */
 bool output_file_data(const char * absolute_path) // cat
@@ -437,7 +437,7 @@ bool output_file_data(const char * absolute_path) // cat
 
 /**
  * @brief 删除文件
- * @param absolute_path 文件的绝对路径
+ * @param[in] absolute_path 文件的绝对路径
  * @return 删除成功返回true，删除失败返回false
  */
 bool remove_file(const char * absolute_path)  // rm
